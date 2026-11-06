@@ -3,7 +3,7 @@
 # A versao vem do arquivo VERSION; as notas vem de CHANGELOG.md.
 # Configuracao (Settings > Secrets and variables > Actions):
 #   Secret:   MODRINTH_TOKEN   (o mesmo token do Elementar serve)
-#   Variable: MODRINTH_ID      (ID do projeto Fiat Lux no Modrinth, 8 caracteres)
+#   Variable: MODRINTH_ID      (opcional: o ID e procurado pelo slug "fiat-lux")
 name: Publish
 
 on:
@@ -47,6 +47,29 @@ jobs:
           name: fiat-lux-zip
           path: dist/*.zip
 
+      - name: Find Modrinth project ID
+        id: mr
+        if: ${{ !inputs.dry_run }}
+        env:
+          TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          GIVEN: ${{ vars.MODRINTH_ID }}
+        run: |
+          if [ -z "$TOKEN" ]; then echo "No MODRINTH_TOKEN: Modrinth skipped"; exit 0; fi
+          for SLUG in "$GIVEN" fiat-lux; do
+            [ -z "$SLUG" ] && continue
+            ID=$(curl -sf -H "Authorization: $TOKEN" -H "User-Agent: tardincanada/fiat-lux (GitHub Actions)" \
+                 "https://api.modrinth.com/v2/project/$(printf %s "$SLUG" | jq -sRr @uri)" | jq -r '.id // empty') || true
+            [ -n "$ID" ] && break
+            echo "Modrinth project '$SLUG' not found"
+            ID=""
+          done
+          if [ -z "$ID" ]; then
+            echo "::error::Modrinth project not found. Check that the project slug is 'fiat-lux' and the token has 'Read projects'."
+            exit 1
+          fi
+          echo "Modrinth project ID: $ID"
+          echo "id=$ID" >> "$GITHUB_OUTPUT"
+
       - name: Publish
         if: ${{ !inputs.dry_run }}
         uses: Kir-Antipov/mc-publish@v3.3
@@ -59,7 +82,7 @@ jobs:
           loaders: iris
           game-versions: 1.21.1
 
-          modrinth-id: ${{ vars.MODRINTH_ID }}
+          modrinth-id: ${{ steps.mr.outputs.id }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           github-tag: v${{ steps.meta.outputs.version }}
