@@ -187,3 +187,5 @@ option.SLIME_TRANSLUCENT=Slimes translúcidos
 option.SLIME_OPACITY=Opacidade da membrana do slime
 option.SLIME_TRANSLUCENT.comment=Slimes parecem uma célula: membrana translúcida, com o miolo, os olhos e a boca visíveis por dentro. Funciona com qualquer anti-serrilhado.
 option.SLIME_OPACITY.comment=Quanto a membrana tapa a visão onde você a olha de frente. As bordas são sempre mais densas.
+option.STORM_DARKNESS=Escuridão da tempestade
+option.STORM_DARKNESS.comment=Quanto o céu e a luz ambiente escurecem na tempestade. O alto do céu escurece mais; fica uma faixa mais clara perto do horizonte. 0 = igual à chuva.

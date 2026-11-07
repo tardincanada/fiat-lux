@@ -187,3 +187,5 @@ option.SLIME_TRANSLUCENT=Translucent slimes
 option.SLIME_OPACITY=Slime membrane opacity
 option.SLIME_TRANSLUCENT.comment=Slimes look like a cell: a translucent membrane with the core, eyes and mouth visible inside. Works with any anti-aliasing.
 option.SLIME_OPACITY.comment=How opaque the membrane is where you look at it straight on. The edges are always denser.
+option.STORM_DARKNESS=Storm darkness
+option.STORM_DARKNESS.comment=How much the sky and ambient light darken in a thunderstorm. The top of the sky darkens most; a lighter band stays near the horizon. 0 = same as rain.

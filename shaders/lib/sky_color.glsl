@@ -70,6 +70,13 @@ vec3 getBiomeSky(vec3 viewDir) {
     vec3 grey = vec3(0.42, 0.45, 0.50) * (0.9 + 0.15 * up);
     sky = mix(sky, grey, over);
 
+    // Tempestade: as nuvens de trovoada são grossas e escuras no alto; a luz entra de lado,
+    // por baixo da base delas, e deixa uma faixa mais clara junto ao horizonte.
+    // A luz ambiente vem deste céu, então escurece junto.
+    float storm = clamp(thunderStrength * (1.0 - aboveClouds()), 0.0, 1.0) * STORM_DARKNESS;
+    float band = pow(1.0 - up, 4.0);
+    sky *= mix(1.0, mix(0.22, 0.85, band), storm);
+
     return mix(vanilla, sky * SKY_BRIGHTNESS, day);
     #endif
 }
