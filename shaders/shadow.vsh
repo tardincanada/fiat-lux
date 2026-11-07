@@ -9,6 +9,8 @@ uniform mat4 shadowModelViewInverse;
 out vec2 texcoord;
 out vec4 glcolor;
 flat out int isWater;
+uniform int entityId;
+flat out int isSlime;
 
 #ifdef COLORED_LIGHTS_ON
 // Mapa 3D de blocos em volta da câmera, refeito a cada quadro (limpo pelo Iris antes da sombra).
@@ -33,6 +35,7 @@ void main() {
     gl_Position = gl_ProjectionMatrix * sView;
     gl_Position.xyz = distortShadow(gl_Position.xyz);
     isWater = (id >= ID_WATER && id <= ID_BRINE) ? 1 : 0;
+    isSlime = (entityId == ID_SLIME) ? 1 : 0;
 
     #ifdef COLORED_LIGHTS_ON
     bool terrain = renderStage == MC_RENDER_STAGE_TERRAIN_SOLID || renderStage == MC_RENDER_STAGE_TERRAIN_CUTOUT

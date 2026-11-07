@@ -16,6 +16,11 @@ out vec3 normal;
 out vec3 worldPos;
 flat out int matId;
 flat out vec2 cherenkov;
+#ifdef PROGRAM_ENTITIES_TRANSLUCENT
+uniform int entityId;
+flat out int isSlime;
+out vec3 vViewPos;
+#endif
 
 void main() {
     gl_Position = taaJitter((gl_ProjectionMatrix * (gl_ModelViewMatrix * gl_Vertex)));
@@ -45,6 +50,10 @@ void main() {
     #endif
     matId = idToMaterial(id);
     cherenkov = cherenkovLevels(id);
+    #ifdef PROGRAM_ENTITIES_TRANSLUCENT
+    isSlime = (entityId == ID_SLIME) ? 1 : 0;
+    vViewPos = viewPos;
+    #endif
 }
 #endif
 
@@ -59,6 +68,10 @@ in vec3 normal;
 in vec3 worldPos;
 flat in int matId;
 flat in vec2 cherenkov;
+#ifdef PROGRAM_ENTITIES_TRANSLUCENT
+flat in int isSlime;
+in vec3 vViewPos;
+#endif
 
 /* RENDERTARGETS: 0,1,2,3,6 */
 layout(location = 0) out vec4 outAlbedo;
@@ -73,6 +86,17 @@ void main() {
     albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a); // flash vermelho de dano
     #endif
     if (albedo.a < 0.1) discard;
+    #if defined PROGRAM_ENTITIES_TRANSLUCENT && defined SLIME_TRANSLUCENT
+    if (isSlime == 1) {
+        // camada de fora do slime = membrana de uma célula: fina de frente, densa na borda
+        // (como uma bolha vista de lado), deixando ver o miolo, os olhos e a boca por dentro.
+        // Os pontos descartados formam a transparência; o TAA os mistura.
+        float ndv = abs(dot(normalize(normal), normalize(-vViewPos)));
+        float op = mix(SLIME_OPACITY, 0.92, pow(1.0 - ndv, 2.5));
+        if (ditherNoise(gl_FragCoord.xy) >= op) discard;
+        albedo.rgb = mix(albedo.rgb, albedo.rgb * 1.15 + vec3(0.03, 0.06, 0.02), 0.5); // membrana mais clara
+    }
+    #endif
 
     float lum = dot(albedo.rgb, vec3(0.299, 0.587, 0.114));
     vec3 emissive = vec3(0.0);

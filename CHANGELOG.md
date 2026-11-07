@@ -1,3 +1,7 @@
+# Fiat Lux 1.0.0-beta.3
+
+- Slimes look like a cell: the outer layer is a translucent membrane (thin in front, denser at the edges) with the core, eyes and mouth visible inside, and it casts only a faint shadow. New "Creatures" screen with an on/off switch and a membrane opacity slider. Smoothest with TAA.
+
 # Fiat Lux 1.0.0-beta.2
 
 - Rain, snow and thunderstorms now block direct sunlight and moonlight: no sun shadows, no sun/moon discs or halo, and no sun or moon reflections on water while the sky is overcast.

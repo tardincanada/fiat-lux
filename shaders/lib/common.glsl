@@ -221,6 +221,19 @@ uint voxelCodeFromId(int id) {
 }
 int idFromVoxelCode(uint c) { return c >= 3u ? ID_LIGHT_FIRST + int(c) - 3 : ID_EMISSIVE; }
 
+// ---------- transparência por pontilhado (o TAA mistura os pontos numa transparência lisa) ----------
+#define ID_SLIME 10300 // entity.properties
+float ditherNoise(vec2 frag) {
+    #if AA_MODE == 2
+    frag += 5.588238 * float(frameCounter % 64);   // muda a cada quadro: o TAA tira a média
+    return fract(52.9829189 * fract(dot(frag, vec2(0.06711056, 0.00583715))));
+    #else
+    ivec2 p = ivec2(frag) & 3;                        // Bayer 4x4 fixo (sem TAA)
+    int b[16] = int[16](0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5);
+    return (float(b[p.y * 4 + p.x]) + 0.5) / 16.0;
+    #endif
+}
+
 // ---------- TAA: deslocamento sub-pixel da câmera (Halton 2,3; 8 posições) ----------
 vec2 taaOffset() {
     int i = frameCounter % 8 + 1;

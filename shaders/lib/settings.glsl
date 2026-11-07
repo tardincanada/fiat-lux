@@ -52,6 +52,10 @@ const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25
 #define CHERENKOV_STRENGTH 0.8   // [0.2 0.4 0.6 0.8 1.0 1.5 2.0 3.0]
 #define CHERENKOV_SPEED 2.0      // [0.0 0.5 1.0 2.0 3.0 5.0]
 #define CHERENKOV_WATER_BOOST 1.3 // [1.0 1.15 1.3 1.5 2.0 2.5]
+
+// ---------- Criaturas ----------
+#define SLIME_TRANSLUCENT        // slime como uma célula: membrana translúcida, miolo visível
+#define SLIME_OPACITY 0.30 // [0.15 0.20 0.30 0.40 0.50 0.65]  opacidade da membrana de frente (a borda é mais densa)
 // mesma cor do mod (radiation.json: 70,140,255), em linear
 #define CHERENKOV_COLOR vec3(0.061, 0.262, 1.0)
 
