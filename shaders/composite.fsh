@@ -198,6 +198,7 @@ void main() {
         float weather = max(rainStrength, overcastAmount() * 0.6);
         f = max(f, weather * (1.0 - exp(-dist * 0.01 * (1.0 + SNOW_FOG * rainStrength * snowFall))));
         f = max(f, fogDense * FOG_DENSE_STRENGTH * (1.0 - exp(-dist * 0.025)));
+        f = max(f, fogHumid * FOG_HUMID_STRENGTH * (1.0 - exp(-dist * 0.006)));
         f *= altClear;
         // a névoa tende à cor do céu ATRÁS do objeto (na mesma direção do olhar), nunca a mais
         // que ela: antes usava a cor do horizonte, que é mais clara que o céu acima dele
@@ -238,6 +239,7 @@ void main() {
             float weatherC = max(rainStrength, overcastAmount() * 0.6) * (1.0 - aboveClouds());
             float fc = weatherC * (1.0 - exp(-max(cloudDist - 120.0, 0.0) * 0.0025 * (1.0 + SNOW_FOG * rainStrength * snowFall)));
             fc = max(fc, fogDense * FOG_DENSE_STRENGTH * (1.0 - exp(-cloudDist * 0.004)));
+            fc = max(fc, fogHumid * FOG_HUMID_STRENGTH * (1.0 - exp(-cloudDist * 0.0015)));
             vec3 cdir = mat3(gbufferModelViewInverse) * viewPos;
             cdir = normalize(vec3(cdir.x, 0.0, cdir.z) + vec3(0.0, 0.02, 0.0));
             vec3 cloudC = mix(cl.rgb, getBiomeSky(mat3(gbufferModelView) * cdir), clamp(fc, 0.0, 1.0));

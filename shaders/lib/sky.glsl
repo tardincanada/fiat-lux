@@ -25,7 +25,9 @@ void main() {
     vec4 c = texture(gtexture, texcoord) * glcolor;   // sol e lua
     // sol e lua somem atrás das nuvens
     float cloudA = getClouds(viewPos).a;
-    outColor = vec4(toLinear(c.rgb) * 2.0, c.a * (1.0 - cloudA * 0.97));
+    // e somem por completo na chuva, neve e tempestade (céu encoberto), exceto acima das nuvens
+    float rainHide = clamp(rainStrength * (1.0 - aboveClouds()), 0.0, 1.0);
+    outColor = vec4(toLinear(c.rgb) * 2.0, c.a * (1.0 - cloudA * 0.97) * (1.0 - rainHide));
     #else
     if (renderStage == MC_RENDER_STAGE_STARS) {
         float cloudA = getClouds(viewPos).a;

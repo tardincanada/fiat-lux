@@ -65,6 +65,7 @@ const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25
 #define CLOUD_SPEED 1.0        // [0.0 0.5 1.0 2.0 4.0]
 #define OVERCAST_STRENGTH 0.85 // [0.0 0.25 0.5 0.7 0.85 1.0]
 #define FOG_DENSE_STRENGTH 0.8 // [0.3 0.5 0.65 0.8 1.0]
+#define FOG_HUMID_STRENGTH 0.5 // [0.0 0.25 0.5 0.75 1.0]  neblina da selva
 
 // ---------- Altitude ----------
 #define CLOUD_HEIGHT 192.0   // [128.0 160.0 192.0 224.0 256.0 320.0]

@@ -60,7 +60,7 @@ vec3 getBiomeSky(vec3 viewDir) {
     float sunDot = max(dot(d, sunDir), 0.0);
     float low = (1.0 - smoothstep(0.0, 0.35, h)) * smoothstep(-0.25, 0.0, h);
     sky += vec3(1.0, 0.42, 0.14) * low * (pow(sunDot, 3.0) * 1.4 + 0.25) * pow(1.0 - up, 2.0);
-    sky += vec3(1.0, 0.9, 0.75) * pow(sunDot, 48.0) * 0.6 * day;
+    sky += vec3(1.0, 0.9, 0.75) * pow(sunDot, 48.0) * 0.6 * day * (1.0 - over); // halo some com o céu fechado
 
     // crepúsculo: o zênite fica azul mais fundo e escurece antes do horizonte do lado do sol
     float dusk = 1.0 - smoothstep(-0.02, 0.10, h);

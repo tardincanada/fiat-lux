@@ -1,3 +1,9 @@
+# Fiat Lux 1.0.0-beta.2
+
+- Rain, snow and thunderstorms now block direct sunlight and moonlight: no sun shadows, no sun/moon discs or halo, and no sun or moon reflections on water while the sky is overcast.
+- Less fog in jungles (new, lighter jungle fog; option "Jungle fog" under Sky).
+- Menu fully translated: English and Portuguese, with a tooltip on every option.
+
 # Fiat Lux 1.0.0-beta.1
 
 First public release (beta). Iris shaderpack for Minecraft 1.21.1, made for the Elementar mod but works in any world.

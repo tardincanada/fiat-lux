@@ -32,7 +32,8 @@ uniform float cloudStratus;  // nuvens: Estratos
 uniform float cloudFew;      // nuvens: Poucas
 uniform float cloudNone;     // nuvens: Nenhuma
 uniform float fogLight;      // neblina: Leve
-uniform float fogDense;      // neblina: Densa
+uniform float fogDense;
+uniform float fogHumid;      // neblina: Úmida (selva), mais leve que a Densa      // neblina: Densa
 // cor da água por bioma (0..1, com transição de 20 s)
 uniform float waterSea;      // bioma de mar/praia (decide a água ao redor da câmera submersa)
 uniform float waterWarm;     // oceano morno -> S1

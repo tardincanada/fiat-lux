@@ -13,8 +13,13 @@ vec3 getLightColor() {
     float night = smoothstep(0.0, 0.12, -h);
     vec3 sun  = mix(vec3(1.0, 0.45, 0.2), vec3(1.0, 0.93, 0.82), smoothstep(0.05, 0.4, h)) * SUN_BRIGHTNESS;
     vec3 moon = vec3(0.35, 0.45, 0.75) * 0.12;
-    float weather = clamp(max(rainStrength, biomeOvercast * OVERCAST_STRENGTH) * (1.0 - aboveClouds()), 0.0, 1.0);
-    return (sun * day + moon * night) * (1.0 - weather * 0.8) * (1.0 + ALT_SUN_BOOST * altitudeFactor());
+    // Chuva, neve e tempestade fecham o céu: sem luz direta (nem sombras nem brilho do sol/lua
+    // na água), sumindo junto com a intensidade da chuva. Biomas nublados guardam 20% de sol.
+    // Acima da camada de nuvens o sol volta inteiro.
+    float above = aboveClouds();
+    float rainW = clamp(rainStrength * (1.0 - above), 0.0, 1.0);
+    float overB = clamp(biomeOvercast * OVERCAST_STRENGTH * (1.0 - above), 0.0, 1.0);
+    return (sun * day + moon * night) * (1.0 - rainW) * (1.0 - overB * 0.8) * (1.0 + ALT_SUN_BOOST * altitudeFactor());
 }
 
 // Luz ambiente = a cor do céu que o observador vê (zênite + horizonte).
