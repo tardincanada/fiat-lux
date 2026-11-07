@@ -185,5 +185,5 @@ option.BLOOM_RADIUS.comment=Tamanho do halo em volta de luzes fortes.
 screen.MOBS=Criaturas
 option.SLIME_TRANSLUCENT=Slimes translúcidos
 option.SLIME_OPACITY=Opacidade da membrana do slime
-option.SLIME_TRANSLUCENT.comment=Slimes parecem uma célula: membrana translúcida, com o miolo, os olhos e a boca visíveis por dentro. Fica mais liso com TAA.
+option.SLIME_TRANSLUCENT.comment=Slimes parecem uma célula: membrana translúcida, com o miolo, os olhos e a boca visíveis por dentro. Funciona com qualquer anti-serrilhado.
 option.SLIME_OPACITY.comment=Quanto a membrana tapa a visão onde você a olha de frente. As bordas são sempre mais densas.

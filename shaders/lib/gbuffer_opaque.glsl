@@ -86,14 +86,15 @@ void main() {
     albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a); // flash vermelho de dano
     #endif
     if (albedo.a < 0.1) discard;
+    float coverage = 1.0; // > 0 e < 1 só na membrana do slime (mistura no G-buffer)
     #if defined PROGRAM_ENTITIES_TRANSLUCENT && defined SLIME_TRANSLUCENT
     if (isSlime == 1) {
         // camada de fora do slime = membrana de uma célula: fina de frente, densa na borda
         // (como uma bolha vista de lado), deixando ver o miolo, os olhos e a boca por dentro.
-        // Os pontos descartados formam a transparência; o TAA os mistura.
+        // A cor mistura com o que já está no G-buffer (o miolo); normal e lightmap ficam os
+        // da membrana (blend desligado nesses buffers em shaders.properties).
         float ndv = abs(dot(normalize(normal), normalize(-vViewPos)));
-        float op = mix(SLIME_OPACITY, 0.92, pow(1.0 - ndv, 2.5));
-        if (ditherNoise(gl_FragCoord.xy) >= op) discard;
+        coverage = mix(SLIME_OPACITY, 0.92, pow(1.0 - ndv, 2.5));
         albedo.rgb = mix(albedo.rgb, albedo.rgb * 1.15 + vec3(0.03, 0.06, 0.02), 0.5); // membrana mais clara
     }
     #endif
@@ -118,10 +119,10 @@ void main() {
         mat = MAT_DEFAULT;
     }
 
-    outAlbedo   = vec4(albedo.rgb, 1.0);
+    outAlbedo   = vec4(albedo.rgb, coverage);
     outNormal   = vec4(normalize(normal) * 0.5 + 0.5, 1.0);
     outLight    = vec4(lmcoord, float(mat) / 255.0, 1.0);
-    outEmissive = vec4(emissive, 1.0);
-    outWetGlow  = vec4(wetGlow, 1.0);
+    outEmissive = vec4(emissive, coverage);
+    outWetGlow  = vec4(wetGlow, coverage);
 }
 #endif

@@ -12,8 +12,8 @@ void main() {
     vec4 c = texture(gtexture, texcoord) * glcolor;
     if (c.a < 0.1) discard;
     #ifdef SLIME_TRANSLUCENT
-    // membrana do slime (textura semitransparente): sombra fraca e esverdeada, só o miolo é escuro
-    if (isSlime == 1 && c.a < 0.99) {
+    // membrana do slime (cubo de fora: canto superior esquerdo da textura 64x32): sombra fraca
+    if (isSlime == 1 && texcoord.x < 0.5 && texcoord.y < 0.5) {
         if (ditherNoise(gl_FragCoord.xy) >= SLIME_OPACITY) discard;
     }
     #endif

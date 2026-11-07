@@ -1,6 +1,6 @@
 # Fiat Lux 1.0.0-beta.3
 
-- Slimes look like a cell: the outer layer is a translucent membrane (thin in front, denser at the edges) with the core, eyes and mouth visible inside, and it casts only a faint shadow. New "Creatures" screen with an on/off switch and a membrane opacity slider. Smoothest with TAA.
+- Slimes look like a cell: the outer layer is a translucent membrane (thin in front, denser at the edges) with the core, eyes and mouth visible inside, and it casts only a faint shadow. New "Creatures" screen with an on/off switch and a membrane opacity slider. Works with any anti-aliasing.
 
 # Fiat Lux 1.0.0-beta.2
 
