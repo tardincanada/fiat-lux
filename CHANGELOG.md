@@ -1,5 +1,6 @@
 # Fiat Lux 1.0.0-beta.3
 
+- Fixed distant tree tops flickering: shadow bias now follows the shadow texel size, leaves are offset toward the light, and wind fades out beyond ~60 blocks.
 - Thunderstorms are darker than plain rain: the top of the sky darkens most and a lighter band stays near the horizon; ambient light drops with it. New "Storm darkness" slider.
 - Slimes look like a cell: the outer layer is a translucent membrane (thin in front, denser at the edges) with the core, eyes and mouth visible inside, and it casts only a faint shadow. New "Creatures" screen with an on/off switch and a membrane opacity slider. Works with any anti-aliasing.
 

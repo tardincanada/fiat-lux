@@ -269,6 +269,8 @@ vec3 windOffset(vec3 wp, float amount) {
     #ifndef WAVING_FOLIAGE
     return vec3(0.0);
     #else
+    // longe, o balanço fica menor que um pixel e só faz a folhagem cintilar: some aos poucos
+    amount *= 1.0 - smoothstep(40.0, 80.0, length(wp - cameraPosition));
     if (amount <= 0.0) return vec3(0.0);
     float t = frameTimeCounter * WIND_SPEED;
     float storm = clamp(rainStrength * 0.5 + thunderStrength, 0.0, 1.0);

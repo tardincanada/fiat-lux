@@ -17,8 +17,18 @@ vec3 getShadow(vec3 feetPos, vec3 worldNormal, float skylight) {
     vec3 fallback = vec3(smoothstep(0.75, 0.95, skylight));
     if (dist > shadowDistance) return fallback;
 
-    // normal offset: afasta o ponto da superfície para evitar "shadow acne"
-    vec3 p = feetPos + worldNormal * (0.04 + dist * 0.002);
+    // Afasta o ponto da superfície para evitar "shadow acne" (a superfície fazendo sombra nela
+    // mesma). O afastamento acompanha o tamanho do texel da sombra naquele ponto: longe do
+    // jogador o texel é maior (distorção), e um afastamento fixo deixava a copa das árvores
+    // piscando entre luz e sombra.
+    vec4 sp0 = shadowProjection * (shadowModelView * vec4(feetPos, 1.0));
+    float f = length(sp0.xy) * SHADOW_DISTORT + (1.0 - SHADOW_DISTORT);
+    float texelWorld = 2.0 * shadowDistance / float(shadowMapResolution) * f / (1.0 - SHADOW_DISTORT * 0.5);
+    float bias = 0.03 + texelWorld * 1.5;
+    vec3 offDir = worldNormal;
+    // folhas e plantas não têm normal confiável: afasta na direção da luz
+    if (dot(worldNormal, worldNormal) < 0.01) { offDir = normalize(mat3(gbufferModelViewInverse) * shadowLightPosition); bias *= 1.5; }
+    vec3 p = feetPos + offDir * bias;
     vec4 sp = shadowProjection * (shadowModelView * vec4(p, 1.0));
     sp.xyz = distortShadow(sp.xyz) * 0.5 + 0.5;
     if (any(lessThan(sp.xy, vec2(0.0))) || any(greaterThan(sp.xy, vec2(1.0)))) return fallback;
