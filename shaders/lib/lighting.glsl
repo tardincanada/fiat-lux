@@ -28,7 +28,7 @@ vec3 getAmbientColor() {
     vec3 zen = getBiomeSky(normalize(upPosition));
     vec3 h1  = getBiomeSky(mat3(gbufferModelView) * normalize(vec3( 1.0, 0.15,  0.3)));
     vec3 h2  = getBiomeSky(mat3(gbufferModelView) * normalize(vec3(-1.0, 0.15, -0.3)));
-    vec3 a = (zen * 0.55 + (h1 + h2) * 0.225) * AMBIENT_SKY_SCALE;
+    vec3 a = (zen * 0.55 + (h1 + h2) * 0.225) * AMBIENT_SKY_SCALE / rainSkyDim();
     a = max(a, vec3(0.010, 0.013, 0.026)); // piso para noites muito escuras
     return a * AMBIENT_STRENGTH;
 }

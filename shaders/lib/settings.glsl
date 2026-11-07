@@ -89,6 +89,7 @@ const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25
 #define RAIN_STYLE 1        // [0 1]  0 Minecraft, 1 realista
 #define RAIN_OPACITY 1.0    // [0.5 0.75 1.0 1.25 1.5]
 #define RAIN_SPEED 1.0      // [0.6 0.8 1.0 1.2 1.5]
+#define RAIN_SKY_DIM 0.55 // [1.0 0.8 0.65 0.55 0.45 0.35]  brilho do céu e da névoa na chuva (1 = como antes); não muda a luz ambiente
 #define STORM_DARKNESS 0.65 // [0.0 0.25 0.45 0.65 0.8 0.9]  quanto o céu (e a luz ambiente) escurece na tempestade
 #define SNOW_FOG 2.0        // [0.0 1.0 2.0 3.0 4.0]  quanto a neve fecha a visão a mais que a chuva
 #define CLEAR_ABOVE_CLOUDS

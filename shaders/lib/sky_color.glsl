@@ -12,6 +12,17 @@ float overcastAmount() {
     return clamp(max(rainStrength, biomeOvercast * OVERCAST_STRENGTH) * (1.0 - aboveClouds()), 0.0, 1.0);
 }
 
+// Na chuva o "céu" que se vê é a base das nuvens, mais escura que o cinza do céu aberto.
+// O céu e a névoa (que tende à cor do céu) escurecem por este fator; a luz ambiente
+// divide por ele e continua igual (a luz da chuva já estava aprovada).
+float rainSkyDim() {
+    #ifdef BIOME_SKY
+    return mix(1.0, RAIN_SKY_DIM, clamp(rainStrength * (1.0 - aboveClouds()), 0.0, 1.0));
+    #else
+    return 1.0;
+    #endif
+}
+
 // Cor do céu sem nuvens, em linear
 vec3 getBiomeSky(vec3 viewDir) {
     vec3 vanilla = getSkyColor(viewDir);
@@ -77,7 +88,7 @@ vec3 getBiomeSky(vec3 viewDir) {
     float band = pow(1.0 - up, 4.0);
     sky *= mix(1.0, mix(0.22, 0.85, band), storm);
 
-    return mix(vanilla, sky * SKY_BRIGHTNESS, day);
+    return mix(vanilla, sky * SKY_BRIGHTNESS, day) * rainSkyDim();
     #endif
 }
 
