@@ -18,6 +18,8 @@ const vec4 colortex6ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const vec4 colortex2ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const vec4 colortex3ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const vec4 colortex4ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
+const int colortex9Format = RGBA16;   // gelo na frente: normal, luz do céu, máscara
+const vec4 colortex9ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 */
 
 uniform sampler2D colortex0;

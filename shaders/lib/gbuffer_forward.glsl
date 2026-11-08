@@ -12,6 +12,7 @@ out vec3 normal;
 out vec3 viewPos;
 flat out int matId;
 flat out float waterCls;
+flat out float isIce;
 #ifdef PROGRAM_WEATHER
 uniform sampler2D gtexture;
 flat out float wRain;
@@ -39,7 +40,9 @@ void main() {
     #ifdef PROGRAM_WATER
     matId = idToMaterial(int(mc_Entity.x + 0.5));
     waterCls = waterClassFromId(int(mc_Entity.x + 0.5));
+    isIce = int(mc_Entity.x + 0.5) == ID_ICE ? 1.0 : 0.0;
     #else
+    isIce = 0.0;
     waterCls = 0.0;
     matId = MAT_DEFAULT;
     #endif
@@ -56,13 +59,36 @@ in vec3 normal;
 in vec3 viewPos;
 flat in int matId;
 flat in float waterCls;
+flat in float isIce;
 #ifdef PROGRAM_WEATHER
 flat in float wRain;
 #endif
 
 #ifdef PROGRAM_WATER
-/* RENDERTARGETS: 0,4 */
+/* RENDERTARGETS: 0,4,9 */
 layout(location = 1) out vec4 outWater;
+layout(location = 2) out vec4 outIce; // gelo na frente: normal com relevo, luz do céu, máscara (sem blend)
+
+// Relevo do gelo: geada fina + alguns riscos/rachaduras longos, no plano da face.
+float iceHeight(vec2 p) {
+    float frost = fbm(p * 7.0, 3);
+    float crack = 1.0 - smoothstep(0.0, 0.035, abs(cloudNoise(p * 1.3 + 3.7) - 0.5));
+    crack *= smoothstep(0.35, 0.6, cloudNoise(p * 0.5 + 11.0));          // rachaduras só em partes
+    return frost * 0.5 - crack * 0.6;
+}
+vec3 iceNormal(vec3 worldPos, vec3 nW, out float hOut) {
+    vec3 a = abs(nW);
+    vec3 T = a.y > 0.5 ? vec3(1, 0, 0) : (a.x > 0.5 ? vec3(0, 0, 1) : vec3(1, 0, 0));
+    vec3 B = normalize(cross(nW, T)); T = cross(B, nW);
+    vec2 p = vec2(dot(worldPos, T), dot(worldPos, B));
+    float fp = length(fwidth(p));                                       // blocos por pixel
+    float fade = 1.0 - smoothstep(0.03, 0.12, fp);                      // longe vira liso (sem cintilar)
+    const float e = 0.02;
+    float h0 = iceHeight(p);
+    hOut = h0;
+    vec2 g = vec2(iceHeight(p + vec2(e, 0.0)) - h0, iceHeight(p + vec2(0.0, e)) - h0) / e;
+    return normalize(nW - (g.x * T + g.y * B) * 0.04 * ICE_TEXTURE * fade);
+}
 #elif defined PROGRAM_WEATHER
 /* RENDERTARGETS: 8 */
 // chuva e neve vão para uma camada própria, somada no composite DEPOIS da água e da
@@ -161,6 +187,17 @@ void main() {
         if (!gl_FrontFacing) n = -n;
         #ifdef PROGRAM_WATER
         vec4 waterData = vec4(0.0);
+        outIce = vec4(0.0);
+        if (isIce > 0.5) {
+            vec3 nW = mat3(gbufferModelViewInverse) * n;
+            vec3 feetI = viewToFeet(viewPos);
+            float hv;
+            vec3 niW = iceNormal(feetI + cameraPosition, nW, hv);
+            n = normalize(mat3(gbufferModelView) * niW);
+            albedo.rgb *= 0.96 + 0.08 * clamp(hv + 0.3, 0.0, 1.0);          // leve variação de tom
+            color = toLinear(albedo.rgb);
+            outIce = vec4(encodeNormal(n), lmcoord.y, 1.0);
+        }
         if (matId == MAT_WATER) {
             vec3 geomWorld = mat3(gbufferModelViewInverse) * n;
             vec3 feet = viewToFeet(viewPos);

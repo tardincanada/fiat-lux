@@ -8,6 +8,7 @@ uniform sampler2D colortex3;
 uniform sampler2D colortex4;
 uniform sampler2D colortex6;
 uniform sampler2D colortex8; // chuva e neve
+uniform sampler2D colortex9; // gelo na frente
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1; // profundidade sem a água (fundo)
 
@@ -61,6 +62,8 @@ void main() {
     float depth = texture(depthtex0, texcoord).r;
     vec3 viewPos = screenToView(texcoord, depth);
     vec4 water = texture(colortex4, texcoord);
+    vec4 ice = texture(colortex9, texcoord);
+    bool iceFront = ice.a > 0.5;
 
     // Cherenkov "só na água" (minério de pechblenda, gerador de radioisótopo): aparece
     // quando o bloco é visto através da água ou com a câmera submersa, como no mod.
@@ -72,6 +75,7 @@ void main() {
 
     if (water.a > 0.5 && isEyeInWater == 0) {
         vec3 n = normalize(decodeNormal(water.rg));
+        if (iceFront) n = normalize(upPosition); // água presa sob o gelo não ondula
         vec3 V = -normalize(viewPos);
         float skyl, wcls;
         unpackWaterB(water.b, wcls, skyl);
@@ -114,6 +118,7 @@ void main() {
         color = color * T + inscatter * (1.0 - T);
         #endif
 
+        if (!iceFront) { // sob o gelo, o reflexo e o brilho são os do gelo (abaixo)
         #ifdef WATER_REFLECTIONS
         float f = fresnelSchlick(dot(n, V), 0.02);
         vec3 sky = getFullSky(reflect(-V, n)) * smoothstep(0.0, 0.6, skyl);
@@ -127,12 +132,30 @@ void main() {
         vec3 H = normalize(normalize(shadowLightPosition) + V);
         float spec = pow(max(dot(n, H), 0.0), 240.0) * 3.0;
         color += getLightColor() * shadow * spec;
+        }
 
         // chuva ou neve: água bem dessaturada e um pouco mais escura (céu cinza, luz difusa);
         // na neve, um pouco mais dessaturada ainda
         float wetK = rainStrength * (1.0 - aboveClouds());
         float wl = dot(color, vec3(0.2126, 0.7152, 0.0722));
         color = mix(color, vec3(wl), wetK * mix(0.65, 0.8, snowFall)) * (1.0 - 0.15 * wetK);
+    }
+
+    // Gelo: reflexo fraco (f0 ~ 0,018) e brilho do sol na normal com relevo, que revelam a
+    // geada e as rachaduras sem mudar a cor de longe.
+    if (iceFront && isEyeInWater == 0) {
+        vec3 ni = normalize(decodeNormal(ice.rg));
+        vec3 V = -normalize(viewPos);
+        if (dot(ni, V) < 0.0) ni = -ni;
+        float fI = fresnelSchlick(clamp(dot(ni, V), 0.0, 1.0), 0.018);
+        vec3 skyI = getFullSky(reflect(-V, ni)) * smoothstep(0.0, 0.6, ice.b);
+        #ifdef WATER_REFLECTIONS
+        skyI = traceReflection(viewPos, ni, skyI);
+        #endif
+        color = mix(color, skyI, fI);
+        vec3 shI = getShadow(viewToFeet(viewPos), vec3(0.0, 1.0, 0.0), ice.b);
+        vec3 H = normalize(normalize(shadowLightPosition) + V);
+        color += getLightColor() * shI * pow(max(dot(ni, H), 0.0), 90.0) * 0.8;
     }
 
     #if WATER_TYPE > 0 && defined SNELL_WINDOW

@@ -191,3 +191,5 @@ option.STORM_DARKNESS=Storm darkness
 option.STORM_DARKNESS.comment=How much the sky and ambient light darken in a thunderstorm. The top of the sky darkens most; a lighter band stays near the horizon. 0 = same as rain.
 option.RAIN_SKY_DIM=Rain sky and fog brightness
 option.RAIN_SKY_DIM.comment=How bright the sky and the distance fog are in rain, so far hills do not look whiter than the clouds. 1 = old look. Ambient light is not changed.
+option.ICE_TEXTURE=Ice surface texture
+option.ICE_TEXTURE.comment=Subtle frost and cracks on ice, seen in its reflection and sun glint. 0 = smooth ice.

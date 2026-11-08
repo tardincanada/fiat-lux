@@ -35,6 +35,7 @@ const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25
 #define WATER_REFLECTIONS
 #define WATER_REFRACTION
 #define REFRACTION_STRENGTH 1.0  // [0.5 0.75 1.0 1.5 2.0]
+#define ICE_TEXTURE 0.35 // [0.0 0.2 0.35 0.5 0.75]  relevo sutil na superfície do gelo (geada e riscos)
 #define SNELL_WINDOW
 #define WAVING_FOLIAGE
 #define WIND_STRENGTH 1.0   // [0.25 0.5 0.75 1.0 1.25 1.5 2.0]

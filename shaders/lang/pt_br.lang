@@ -191,3 +191,5 @@ option.STORM_DARKNESS=Escuridão da tempestade
 option.STORM_DARKNESS.comment=Quanto o céu e a luz ambiente escurecem na tempestade. O alto do céu escurece mais; fica uma faixa mais clara perto do horizonte. 0 = igual à chuva.
 option.RAIN_SKY_DIM=Brilho do céu e da névoa na chuva
 option.RAIN_SKY_DIM.comment=Quão claros ficam o céu e a névoa de distância na chuva, para os morros ao longe não ficarem mais brancos que as nuvens. 1 = como antes. A luz ambiente não muda.
+option.ICE_TEXTURE=Textura da superfície do gelo
+option.ICE_TEXTURE.comment=Geada e rachaduras sutis no gelo, que aparecem no reflexo e no brilho do sol. 0 = gelo liso.

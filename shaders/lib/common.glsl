@@ -53,6 +53,7 @@ uniform float waterMud;      // selva/savana/badlands -> D4
 #define ID_PLANT       10006   // plantas baixas: só a ponta balança
 #define ID_TALL_LOW    10007   // planta de dois blocos, metade de baixo
 #define ID_TALL_HIGH   10008   // planta de dois blocos, metade de cima
+#define ID_ICE         10009   // gelo translúcido (gbuffers_water)
 bool isFoliageId(int id) { return id == ID_FOLIAGE || (id >= ID_LEAVES && id <= ID_TALL_HIGH); }
 // 10100..10199: radioativo; dezena = brilho no ar (0-9), unidade = brilho na água (0-9)
 #define ID_RADIOACTIVE 10100

@@ -1,5 +1,6 @@
 # Fiat Lux 1.0.0-beta.3
 
+- Ice: water under ice no longer shows waves, and the ice surface has subtle frost and cracks, seen in its faint reflection and sun glint. New "Ice surface texture" slider.
 - In rain the sky and distance fog are darker, so far hills no longer look whiter than the clouds; ambient light is unchanged. New "Rain sky and fog brightness" slider.
 - Fixed distant tree tops flickering: shadow bias now follows the shadow texel size, leaves are offset toward the light, and wind fades out beyond ~60 blocks.
 - Thunderstorms are darker than plain rain: the top of the sky darkens most and a lighter band stays near the horizon; ambient light drops with it. New "Storm darkness" slider.
