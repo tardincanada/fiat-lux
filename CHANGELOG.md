@@ -1,3 +1,10 @@
+# Fiat Lux 1.0.0-beta.4
+
+- The Moon (Elementar 3.64, dimension `periodic_elements:moon`) has its own programs: no air, so the sky is black even by day, with the stars, Sun and Earth drawn by the mod; no sky scattering, distance fog, clouds, rain or snow. The Sun is white and strong, shadows are sharp and almost black, and a faint bluish earthshine comes from the Earth in the northern sky. New "Elementar" screen with Moon sunlight, shadow fill and earthshine sliders.
+- Fusion plasma: a lit Tokamak (`vacuum_vessel` and `tokamak` with `lit=true`) glows pink-violet (Balmer lines) and lights its surroundings with that colour. New "Fusion plasma glow" slider.
+- Elementar meteors glow yellowish white, and the flame-coloured parts of a flying rocket glow orange. New sliders.
+- Elementar's life support panel lights up like other machine indicator lamps.
+
 # Fiat Lux 1.0.0-beta.3
 
 - Ice: water under ice no longer shows waves, and the ice surface has subtle frost and cracks, seen in its faint reflection and sun glint. New "Ice surface texture" slider.

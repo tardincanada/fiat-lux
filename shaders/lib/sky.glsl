@@ -21,6 +21,19 @@ in vec3 viewPos;
 /* RENDERTARGETS: 0 */
 layout(location = 0) out vec4 outColor;
 void main() {
+    #ifdef DIM_MOON
+    // Lua: o mod desenha o céu (estrelas fixas, o Sol e a Terra). Sem nuvens nem chuva para esconder
+    // nada, e as estrelas aparecem de dia. O resto do céu (disco do horizonte do Iris) fica preto.
+    #ifdef SKY_TEXTURED
+    vec4 c = texture(gtexture, texcoord) * glcolor;   // Sol e Terra
+    outColor = vec4(toLinear(c.rgb) * 2.0, c.a);
+    #else
+    if (renderStage == MC_RENDER_STAGE_CUSTOM_SKY || renderStage == MC_RENDER_STAGE_STARS)
+        outColor = vec4(toLinear(glcolor.rgb) * 1.5, glcolor.a);
+    else
+        outColor = vec4(0.0, 0.0, 0.0, 1.0);
+    #endif
+    #else // DIM_MOON
     #ifdef SKY_TEXTURED
     vec4 c = texture(gtexture, texcoord) * glcolor;   // sol e lua
     // sol e lua somem atrás das nuvens
@@ -39,5 +52,6 @@ void main() {
         outColor = vec4(getBiomeSky(viewPos), 1.0);
     }
     #endif
+    #endif // DIM_MOON
 }
 #endif

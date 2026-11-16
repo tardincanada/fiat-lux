@@ -15,12 +15,18 @@ uniform vec3 cameraPosition;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 uniform float frameTimeCounter;
+#ifdef DIM_MOON
+// a Lua não tem tempo: o Minecraft copia a chuva do mundo normal, então o shader ignora
+const float rainStrength = 0.0;
+const float thunderStrength = 0.0;
+#else
 uniform float rainStrength;
+uniform float thunderStrength;
+#endif
 uniform float viewWidth;
 uniform float viewHeight;
 uniform float far;
 uniform int frameCounter;
-uniform float thunderStrength;
 uniform int isEyeInWater;
 uniform ivec2 eyeBrightnessSmooth;
 // uniforms de bioma (shaders.properties)
@@ -160,13 +166,17 @@ float cloudTop() { return cloudLayerHeights().z; }
 
 // 1 quando a câmera está acima da camada de nuvens mais alta
 float aboveClouds() {
-    #ifdef CLEAR_ABOVE_CLOUDS
+    #if defined CLEAR_ABOVE_CLOUDS && !defined DIM_MOON
     float top = cloudTop();
     return smoothstep(top, top + 24.0, cameraPosition.y);
     #else
     return 0.0;
     #endif
 }
+
+// ---------- Lua (DIM_MOON) ----------
+// direção da Terra no céu da Lua (espaço do mundo): para o norte (-Z) e ~55° para cima (P7 do mod)
+#define MOON_EARTH_DIR vec3(0.0, 0.82, -0.57)
 
 float sunHeight() { return dot(normalize(sunPosition), normalize(upPosition)); }
 
@@ -205,6 +215,7 @@ vec4 lightSourceColor(int id) {
     if (id == 10216) return vec4(0.314, 0.667, 1.00, 0.0); // cherenkov: azul Cherenkov
     if (id == 10217) return vec4(1.00, 0.804, 0.275, 0.0); // cleanroom_yellow: sala limpa
     if (id == 10218) return vec4(1.00, 0.725, 0.353, 0.0); // indicator_lamp: luzes de painel
+    if (id == 10219) return vec4(1.00, 0.510, 0.902, 0.0); // fusion_plasma: plasma do Tokamak (Balmer, rosa-violeta)
     // 10209 = generic: cor de tocha (abaixo)
     return vec4(TORCH_R, TORCH_G, TORCH_B, 0.0);         // tochas, lava, fornos, máquinas e o resto
 }
@@ -224,6 +235,11 @@ int idFromVoxelCode(uint c) { return c >= 3u ? ID_LIGHT_FIRST + int(c) - 3 : ID_
 
 // ---------- transparência por pontilhado (o TAA mistura os pontos numa transparência lisa) ----------
 #define ID_SLIME 10300 // entity.properties
+#define ID_METEOR 10301 // periodic_elements:meteor
+#define ID_ROCKET 10302 // periodic_elements:rocket
+#define ID_FUSION_PLASMA 10219
+#define ID_WHITE_HOT     10212
+#define ID_FURNACE_GLOW  10211
 float ditherNoise(vec2 frag) {
     #if AA_MODE == 2
     frag += 5.588238 * float(frameCounter % 64);   // muda a cada quadro: o TAA tira a média

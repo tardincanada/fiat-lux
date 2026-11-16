@@ -9,6 +9,10 @@ uniform int heldBlockLightValue2;
 // Luz direta (sol de dia, lua de noite)
 vec3 getLightColor() {
     float h = sunHeight();
+    #ifdef DIM_MOON
+    // sol sem atmosfera: branco, sem avermelhar perto do horizonte, e some só quando se põe
+    return vec3(1.0, 0.97, 0.93) * SUN_BRIGHTNESS * MOON_SUN_BOOST * smoothstep(-0.01, 0.02, h);
+    #endif
     float day   = smoothstep(0.0, 0.12, h);
     float night = smoothstep(0.0, 0.12, -h);
     vec3 sun  = mix(vec3(1.0, 0.45, 0.2), vec3(1.0, 0.93, 0.82), smoothstep(0.05, 0.4, h)) * SUN_BRIGHTNESS;
@@ -25,6 +29,10 @@ vec3 getLightColor() {
 // Luz ambiente = a cor do céu que o observador vê (zênite + horizonte).
 // Céu azul deixa a sombra azulada; céu cinza deixa a luz difusa e neutra; no pôr do sol, alaranjada.
 vec3 getAmbientColor() {
+    #ifdef DIM_MOON
+    // céu preto não ilumina: só um resto de luz rebatida pelas montanhas e crateras em volta
+    return vec3(0.0045, 0.0045, 0.0050) * MOON_SHADOW_FILL * AMBIENT_STRENGTH;
+    #endif
     vec3 zen = getBiomeSky(normalize(upPosition));
     vec3 h1  = getBiomeSky(mat3(gbufferModelView) * normalize(vec3( 1.0, 0.15,  0.3)));
     vec3 h2  = getBiomeSky(mat3(gbufferModelView) * normalize(vec3(-1.0, 0.15, -0.3)));
@@ -121,6 +129,14 @@ vec3 computeLightingSplit(vec3 viewPos, vec3 viewNormal, vec2 lm, int mat, out v
     vec3 bounce = getLightColor() * vec3(0.9, 0.85, 0.75) * GROUND_BOUNCE;
     vec3 ambient = (getAmbientColor() * mix(0.45, 1.0, skyF) + bounce * (1.0 - skyF))
                  * (lm.y * lm.y * 0.85 + lm.y * 0.15) + vec3(MIN_LIGHT);
+    #ifdef DIM_MOON
+    // luar da Terra: luz azulada fraca vinda da Terra parada no céu do norte (só se nota na sombra)
+    {
+        vec3 nW = (mat == MAT_FOLIAGE) ? vec3(0.0, 1.0, 0.0) : worldN;
+        float e = max(dot(nW, normalize(MOON_EARTH_DIR)), 0.0) * 0.8 + 0.2;
+        ambient += vec3(0.30, 0.45, 1.0) * 0.012 * MOON_EARTHSHINE * e * (lm.y * lm.y);
+    }
+    #endif
     float hand = handLight(viewPos);
     float arc;
     vec4 tint = blockLightTint(feet, worldN, arc);

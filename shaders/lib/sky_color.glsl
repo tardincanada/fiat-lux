@@ -8,6 +8,9 @@ vec3 viewToWorldDir(vec3 v) { return normalize(mat3(gbufferModelViewInverse) * v
 
 // 0 = céu aberto, 1 = totalmente fechado (chuva ou bioma nublado)
 float overcastAmount() {
+    #ifdef DIM_MOON
+    return 0.0;
+    #endif
     // acima da camada de nuvens o céu do bioma nublado fica limpo
     return clamp(max(rainStrength, biomeOvercast * OVERCAST_STRENGTH) * (1.0 - aboveClouds()), 0.0, 1.0);
 }
@@ -25,6 +28,9 @@ float rainSkyDim() {
 
 // Cor do céu sem nuvens, em linear
 vec3 getBiomeSky(vec3 viewDir) {
+    #ifdef DIM_MOON
+    return vec3(0.0); // sem atmosfera: o céu é preto mesmo de dia (as estrelas, o Sol e a Terra vêm do mod)
+    #endif
     vec3 vanilla = getSkyColor(viewDir);
     #ifndef BIOME_SKY
     return vanilla;

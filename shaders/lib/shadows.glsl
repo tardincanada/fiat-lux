@@ -34,6 +34,9 @@ vec3 getShadow(vec3 feetPos, vec3 worldNormal, float skylight) {
     if (any(lessThan(sp.xy, vec2(0.0))) || any(greaterThan(sp.xy, vec2(1.0)))) return fallback;
 
     float texel = SHADOW_SOFTNESS / float(shadowMapResolution);
+    #ifdef DIM_MOON
+    texel *= 0.5; // sem ar nem céu claro a borda da sombra fica nítida
+    #endif
     vec3 light = vec3(0.0);
     for (int x = -1; x <= 1; x++) {
         for (int y = -1; y <= 1; y++) {

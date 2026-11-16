@@ -193,3 +193,17 @@ option.RAIN_SKY_DIM=Brilho do céu e da névoa na chuva
 option.RAIN_SKY_DIM.comment=Quão claros ficam o céu e a névoa de distância na chuva, para os morros ao longe não ficarem mais brancos que as nuvens. 1 = como antes. A luz ambiente não muda.
 option.ICE_TEXTURE=Textura da superfície do gelo
 option.ICE_TEXTURE.comment=Geada e rachaduras sutis no gelo, que aparecem no reflexo e no brilho do sol. 0 = gelo liso.
+screen.ELEMENTAR=Elementar
+screen.ELEMENTAR.comment=Brilho de máquinas e entidades do Elementar, e a Lua (uma dimensão sem ar).
+option.PLASMA_GLOW=Brilho do plasma de fusão
+option.PLASMA_GLOW.comment=Quanto brilha o plasma rosa-violeta no anel aceso do Tokamak. Com a luz colorida ligada, o plasma também ilumina o lugar de rosa.
+option.METEOR_GLOW=Brilho do meteoro
+option.METEOR_GLOW.comment=Os meteoros que riscam o céu à noite brilham em branco-amarelado.
+option.ROCKET_GLOW=Brilho da chama do foguete
+option.ROCKET_GLOW.comment=As partes de cor de chama (laranja e amarelo) do foguete em voo brilham. A pintura não.
+option.MOON_SUN_BOOST=Lua: luz do Sol
+option.MOON_SUN_BOOST.comment=Na Lua não há ar: o Sol é mais forte e mais branco que na Terra.
+option.MOON_SHADOW_FILL=Lua: luz nas sombras
+option.MOON_SHADOW_FILL.comment=Luz que chega às sombras na Lua, rebatida pelo chão em volta. 1 = quase pretas, como nas fotos da Apollo.
+option.MOON_EARTHSHINE=Lua: luar da Terra
+option.MOON_EARTHSHINE.comment=Luz azulada fraca da Terra parada no céu do norte. Só se nota nas sombras.

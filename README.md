@@ -22,6 +22,11 @@ Licença MIT (ver `LICENSE`). Créditos de técnicas em `CREDITS.md`.
 - **Chuva e neve realistas** (traços finos, flocos lentos, sem bordas), neblina mais densa na neve.
 - **Folhas e plantas ao vento**, mais fortes na tempestade.
 - **Radiação de Cherenkov** em blocos e itens radioativos do Elementar.
+- **A Lua do Elementar** (`periodic_elements:moon`): sem atmosfera, céu preto com as estrelas, o Sol e a
+  Terra que o mod desenha, sem névoa, nuvens nem chuva, sol branco e forte, sombras quase pretas e um
+  luar azulado fraco vindo da Terra.
+- **Brilho próprio do Elementar:** plasma rosa-violeta do Tokamak (também ilumina o lugar), meteoro em brasa
+  e as partes de cor de chama do foguete.
 - **Anti-aliasing:** FXAA ou TAA. Perfis BAIXO / MÉDIO / ALTO e opções para desligar o que pesa.
 
 ## Instalar
@@ -45,6 +50,9 @@ Ao adicionar blocos ao mod, inclua os IDs novos nesses arquivos.
 - `composite` → água, neblina, nuvens, chuva/neve.  `composite1/2` → bloom.  `composite3` → TAA.
   `composite4` → tonemap.  `final` → FXAA ou nitidez.  `shadowcomp` → espalha a luz colorida.
 - `lib/settings.glsl` → todas as opções.
+- `program/` → corpo dos programas grandes (a raiz e `moon/` só incluem).
+- `moon/` → os mesmos programas com `#define DIM_MOON`, usados na Lua (`dimension.properties`).
+  Gerada por `python3 tools/gen_dims.py shaders`; rode de novo ao criar um programa novo.
 
 ## Luz colorida
 Cada lâmpada ilumina com sua cor: sódio de baixa pressão (âmbar, apaga as cores), LED (branco frio),

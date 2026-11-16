@@ -16,8 +16,11 @@ out vec3 normal;
 out vec3 worldPos;
 flat out int matId;
 flat out vec2 cherenkov;
-#ifdef PROGRAM_ENTITIES_TRANSLUCENT
+flat out int glowKind; // 1 = plasma do Tokamak, 2 = meteoro, 3 = foguete (brilho próprio)
+#ifdef PROGRAM_ENTITIES
 uniform int entityId;
+#endif
+#ifdef PROGRAM_ENTITIES_TRANSLUCENT
 flat out int isSlime;
 out vec3 vViewPos;
 #endif
@@ -50,6 +53,11 @@ void main() {
     #endif
     matId = idToMaterial(id);
     cherenkov = cherenkovLevels(id);
+    glowKind = id == ID_FUSION_PLASMA ? 1 : 0;
+    #ifdef PROGRAM_ENTITIES
+    if (entityId == ID_METEOR) glowKind = 2;
+    if (entityId == ID_ROCKET)  glowKind = 3;
+    #endif
     #ifdef PROGRAM_ENTITIES_TRANSLUCENT
     isSlime = (entityId == ID_SLIME) ? 1 : 0;
     vViewPos = viewPos;
@@ -68,6 +76,7 @@ in vec3 normal;
 in vec3 worldPos;
 flat in int matId;
 flat in vec2 cherenkov;
+flat in int glowKind;
 #ifdef PROGRAM_ENTITIES_TRANSLUCENT
 flat in int isSlime;
 in vec3 vViewPos;
@@ -106,6 +115,25 @@ void main() {
     if (mat == MAT_EMISSIVE) {
         // só as partes claras da textura brilham (chama da tocha, miolo da lâmpada...)
         emissive = toLinear(albedo.rgb) * emissiveMask(albedo.rgb) * EMISSIVE_STRENGTH;
+    }
+    if (glowKind == 1) {
+        // anel do Tokamak aceso: as partes rosadas/violeta da textura brilham como plasma quente
+        float mx = max(albedo.r, max(albedo.g, albedo.b));
+        float pink = smoothstep(0.08, 0.30, min(albedo.r, albedo.b) - albedo.g) * smoothstep(0.35, 0.8, mx);
+        float pulse = 0.94 + 0.06 * sin(frameTimeCounter * 1.7 + dot(floor(worldPos + 0.001), vec3(1.3, 2.1, 1.7)));
+        emissive = max(emissive, toLinear(lightSourceColor(ID_FUSION_PLASMA).rgb) * pink * pulse * EMISSIVE_STRENGTH * PLASMA_GLOW);
+    }
+    if (glowKind == 2) {
+        // meteoro: a rocha inteira em brasa branca, mais forte nas partes claras
+        emissive = toLinear(lightSourceColor(ID_WHITE_HOT).rgb) * (0.6 + 0.8 * lum) * EMISSIVE_STRENGTH * METEOR_GLOW;
+    }
+    if (glowKind == 3) {
+        // foguete: só as partes de cor de chama (laranja e amarelo saturados) brilham; a pintura não
+        float mx = max(albedo.r, max(albedo.g, albedo.b));
+        float mn = min(albedo.r, min(albedo.g, albedo.b));
+        float sat = (mx - mn) / max(mx, 1e-4);
+        float flame = smoothstep(0.6, 0.9, albedo.r) * smoothstep(0.45, 0.7, sat) * step(albedo.b, albedo.g);
+        emissive = max(emissive, toLinear(mix(albedo.rgb, lightSourceColor(ID_FURNACE_GLOW).rgb, 0.4)) * flame * EMISSIVE_STRENGTH * ROCKET_GLOW);
     }
     vec3 wetGlow = vec3(0.0);
     if (mat == MAT_RADIOACTIVE) {
