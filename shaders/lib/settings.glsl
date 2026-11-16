@@ -6,7 +6,7 @@ const int   shadowMapResolution = 2048; // [1024 2048 3072 4096]
 const float shadowDistance      = 128.0; // [64.0 96.0 128.0 160.0 192.0 256.0]
 const float shadowDistanceRenderMul = 1.0;
 #if defined DIM_MOON || defined DIM_MARS
-// na Lua e em Marte o céu é desenhado pelo mod sem inclinar o caminho do sol: a sombra precisa seguir o sol que se vê
+// na Lua, em Mercúrio e em Marte o céu é desenhado pelo mod sem inclinar o caminho do sol: a sombra precisa seguir o sol que se vê
 const float sunPathRotation     = 0.0;
 #else
 const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25.0 30.0 40.0]
@@ -63,6 +63,7 @@ const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25
 #define SLIME_TRANSLUCENT        // slime como uma célula: membrana translúcida, miolo visível
 #define METEOR_GLOW 1.5   // [0.0 0.5 1.0 1.5 2.0 3.0]  brilho do meteoro do Elementar
 #define ROCKET_GLOW 1.0   // [0.0 0.5 1.0 1.5 2.0]  brilho das partes de cor de chama do foguete
+#define EXOTIC_GLOW 1.0   // [0.0 0.5 1.0 1.5 2.0]  brilho do escudo magnético e do reator de aniquilação
 #define PLASMA_GLOW 1.5   // [0.0 0.5 1.0 1.5 2.0 3.0]  brilho do plasma no anel do Tokamak
 #define SLIME_OPACITY 0.30 // [0.15 0.20 0.30 0.40 0.50 0.65]  opacidade da membrana de frente (a borda é mais densa)
 // mesma cor do mod (radiation.json: 70,140,255), em linear
@@ -77,6 +78,13 @@ const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25
 #define MARS_SUN 0.55          // [0.43 0.55 0.7 0.85 1.0]  luz do sol em relação à Terra (Marte recebe 43%)
 #define MARS_FOG_DISTANCE 1.0  // [0.5 0.75 1.0 1.25 1.5]  onde começa a névoa caramelo (maior = mais longe)
 #define MARS_STORMS            // tempestades de poeira: névoa marrom e grossa, sol encoberto
+
+// ---------- Mercúrio e Vênus ----------
+#define MERCURY_SUN 1.6        // [1.0 1.3 1.6 2.0 2.5]  sol de Mercúrio em relação à Terra (lá ele é 6,7 vezes mais forte)
+#define MERCURY_AURORA_SUN     // o Sol segue a linha da aurora do mod (rasante perto dela, a pino no lado do dia)
+#define VENUS_SUN 1.3          // [1.0 1.15 1.3 1.5 1.9]  sol de Vênus acima das nuvens (lá ele é 1,9 vez mais forte)
+#define VENUS_HAZE 1.0         // [0.0 0.5 1.0 1.5 2.0]  névoa amarelada no ar de Vênus
+#define VENUS_CLOUD_GLOW 1.0   // [0.0 0.5 1.0 1.5 2.0]  luz amarelada do sol refletida pelas nuvens, vinda de baixo
 
 // ---------- Céu e nuvens por bioma ----------
 #define BIOME_SKY

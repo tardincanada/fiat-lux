@@ -215,6 +215,12 @@ void main() {
         // Lua: sem ar, sem névoa nem perspectiva atmosférica. Só a borda da distância de
         // renderização some no preto do céu, para os chunks não aparecerem cortados.
         color *= 1.0 - smoothstep(far * 0.93, far, dist);
+        #elif defined DIM_VENUS
+        // Vênus: névoa amarelada leve de dia (ar denso, 1 atm), que puxa para a cor do céu
+        float f = smoothstep(far * 0.5, far, dist) * 0.85;
+        f = max(f, (1.0 - exp(-dist * 0.004)) * VENUS_HAZE);
+        f = max(f, smoothstep(far * 0.9, far, dist));
+        color = mix(color, getBiomeSky(viewPos), clamp(f, 0.0, 1.0));
         #elif defined DIM_MARS
         // Marte: névoa cor de caramelo (a cor do céu atrás do objeto), que começa mais longe que na
         // Terra num dia limpo. Na tempestade de poeira ela fica marrom e grossa.
@@ -282,6 +288,20 @@ void main() {
             cdir = normalize(vec3(cdir.x, 0.0, cdir.z) + vec3(0.0, 0.02, 0.0));
             vec3 cloudC = mix(cl.rgb, getBiomeSky(mat3(gbufferModelView) * cdir), clamp(fc, 0.0, 1.0));
             color = mix(color, cloudC, cl.a);
+        }
+    }
+    #endif
+
+    #ifdef DIM_VENUS
+    // Dentro da camada de nuvens de Vênus (Y 20 a 64): névoa amarela grossa em volta da câmera,
+    // como estar dentro de uma nuvem de verdade. Vale também para o céu.
+    {
+        float inCloud = smoothstep(14.0, 26.0, cameraPosition.y) * (1.0 - smoothstep(58.0, 70.0, cameraPosition.y));
+        if (inCloud > 0.0 && isEyeInWater == 0) {
+            float dC = depth >= 1.0 ? 200.0 : dist;
+            float fC = (1.0 - exp(-dC * 0.06)) * inCloud;
+            vec3 cloudC = toLinear(VENUS_FOG) * (getLightColor() * 0.25 + getAmbientColor() * 0.9 + 0.01);
+            color = mix(color, cloudC, fC);
         }
     }
     #endif

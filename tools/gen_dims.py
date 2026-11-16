@@ -14,7 +14,8 @@ As outras dimensões continuam usando a raiz.
 """
 import os, sys, glob, shutil
 
-DIMS = {'moon': '#define DIM_MOON', 'mars': '#define DIM_MARS'}
+DIMS = {'moon': '#define DIM_MOON', 'mars': '#define DIM_MARS',
+        'mercury': '#define DIM_MOON\n#define DIM_MERCURY', 'venus': '#define DIM_VENUS'}
 EXTS = ('.fsh', '.vsh', '.csh', '.gsh')
 
 def main(shaders):

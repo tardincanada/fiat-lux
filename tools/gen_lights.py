@@ -16,6 +16,7 @@ KIND_ID = {
     'ember_glow': 10210, 'furnace_glow': 10211, 'white_hot': 10212, 'electric_arc': 10213,
     'bunsen_flame': 10214, 'ion_beam': 10215, 'cherenkov': 10216, 'cleanroom_yellow': 10217,
     'indicator_lamp': 10218, 'fusion_plasma': 10219,
+    'shield_aurora': 10220, 'annihilation': 10221,
 }
 BEGIN, END = '# >>> lights.json (gerado por tools/gen_lights.py, não edite à mão)', '# <<< lights.json'
 

@@ -8,7 +8,7 @@ vec3 viewToWorldDir(vec3 v) { return normalize(mat3(gbufferModelViewInverse) * v
 
 // 0 = céu aberto, 1 = totalmente fechado (chuva ou bioma nublado)
 float overcastAmount() {
-    #if defined DIM_MOON || defined DIM_MARS
+    #if defined DIM_MOON || defined DIM_MARS || defined DIM_VENUS
     return 0.0;
     #endif
     // acima da camada de nuvens o céu do bioma nublado fica limpo
@@ -30,6 +30,24 @@ float rainSkyDim() {
 vec3 getBiomeSky(vec3 viewDir) {
     #ifdef DIM_MOON
     return vec3(0.0); // sem atmosfera: o céu é preto mesmo de dia (as estrelas, o Sol e a Terra vêm do mod)
+    #endif
+    #ifdef DIM_VENUS
+    {
+        // Vênus: ar denso e claro, cheio de névoa de enxofre: céu amarelo-esbranquiçado, quase igual
+        // no zênite e no horizonte; o sol fica com um halo largo e o poente puxa para o laranja.
+        vec3 d = viewToWorldDir(viewDir);
+        vec3 sunDir = viewToWorldDir(sunPosition);
+        float h = sunHeight();
+        float up = max(d.y, 0.0);
+        vec3 sky = mix(toLinear(VENUS_FOG) * 1.05, toLinear(VENUS_SKY) * 0.82, pow(up, 0.7));
+        sky = mix(sky, toLinear(VENUS_FOG) * 0.9, smoothstep(0.0, -0.3, d.y)); // para baixo: o topo das nuvens
+        float sunDot = max(dot(d, sunDir), 0.0);
+        sky += vec3(1.0, 0.95, 0.80) * pow(sunDot, 12.0) * 0.6;              // halo largo e difuso
+        float low = (1.0 - smoothstep(0.0, 0.3, h)) * smoothstep(-0.2, 0.0, h);
+        sky *= mix(vec3(1.0), vec3(1.15, 0.75, 0.45), low * (0.4 + 0.6 * pow(sunDot, 2.0)));
+        float day = smoothstep(-0.15, 0.03, h);
+        return mix(vec3(0.004, 0.0035, 0.0025), sky, day) * SKY_BRIGHTNESS;
+    }
     #endif
     #ifdef DIM_MARS
     {

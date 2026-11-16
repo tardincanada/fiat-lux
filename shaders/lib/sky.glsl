@@ -52,6 +52,9 @@ void main() {
     float cloudA = getClouds(viewPos).a;
     // e somem por completo na chuva, neve e tempestade (céu encoberto), exceto acima das nuvens
     float rainHide = clamp(rainStrength * (1.0 - aboveClouds()), 0.0, 1.0);
+    #ifdef DIM_VENUS
+    if (renderStage == MC_RENDER_STAGE_MOON) rainHide = 1.0; // Vênus não tem lua
+    #endif
     outColor = vec4(toLinear(c.rgb) * 2.0, c.a * (1.0 - cloudA * 0.97) * (1.0 - rainHide));
     #else
     if (renderStage == MC_RENDER_STAGE_STARS) {
@@ -59,6 +62,9 @@ void main() {
         // estrelas só depois do pôr do sol: começam no fim do crepúsculo civil (sol a -6°)
         // e ficam todas visíveis no náutico (-12°). A vanilla já as mostrava com o sol a ~22°.
         float starVis = 1.0 - smoothstep(-0.20, -0.07, sunHeight());
+        #ifdef DIM_VENUS
+        starVis *= 0.25; // a névoa alta de Vênus apaga quase todas as estrelas
+        #endif
         outColor = vec4(toLinear(glcolor.rgb) * 1.5, glcolor.a * (1.0 - cloudA) * (1.0 - overcastAmount()) * starVis);
     } else {
         outColor = vec4(getBiomeSky(viewPos), 1.0);

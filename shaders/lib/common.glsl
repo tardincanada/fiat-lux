@@ -15,8 +15,8 @@ uniform vec3 cameraPosition;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 uniform float frameTimeCounter;
-#if defined DIM_MOON || defined DIM_MARS
-// a Lua e Marte não têm chuva: o Minecraft copia a chuva do mundo normal, então o shader ignora
+#if defined DIM_MOON || defined DIM_MARS || defined DIM_VENUS
+// a Lua, Marte e Vênus não têm chuva: o Minecraft copia a chuva do mundo normal, então o shader ignora
 const float rainStrength = 0.0;
 const float thunderStrength = 0.0;
 #else
@@ -166,7 +166,7 @@ float cloudTop() { return cloudLayerHeights().z; }
 
 // 1 quando a câmera está acima da camada de nuvens mais alta
 float aboveClouds() {
-    #if defined CLEAR_ABOVE_CLOUDS && !defined DIM_MOON && !defined DIM_MARS
+    #if defined CLEAR_ABOVE_CLOUDS && !defined DIM_MOON && !defined DIM_MARS && !defined DIM_VENUS
     float top = cloudTop();
     return smoothstep(top, top + 24.0, cameraPosition.y);
     #else
@@ -177,6 +177,25 @@ float aboveClouds() {
 // ---------- Lua (DIM_MOON) ----------
 // direção da Terra no céu da Lua (espaço do mundo): para o norte (-Z) e ~55° para cima (P7 do mod)
 #define MOON_EARTH_DIR vec3(0.0, 0.82, -0.57)
+
+// ---------- Mercúrio (DIM_MERCURY) ----------
+// O dia em Mercúrio dura 176 dias da Terra: a linha da aurora anda pelo chão, em x = -tempo / 1200
+// (1 bloco para o oeste por minuto). O Sol sobe 0,6° por bloco para o leste da linha, a pino a
+// 150 blocos, e fica abaixo do horizonte a oeste dela (client/InnerSky.java do mod).
+#ifdef DIM_MERCURY
+uniform int worldTime;
+uniform int worldDay;
+float mercuryLineX() { return -(float(worldDay) * 20.0 + float(worldTime) / 1200.0); }
+// altura do Sol em graus num ponto x do mundo
+float mercurySunElev(float x) { return clamp((x - mercuryLineX()) * 0.6, -90.0, 90.0); }
+// direção do Sol (espaço do mundo): nasce no leste (+X) e passa pelo zênite
+vec3 mercurySunDir(float x) { float e = radians(mercurySunElev(x)); return vec3(cos(e), sin(e), 0.0); }
+#endif
+
+// ---------- Vênus (DIM_VENUS) ----------
+#define VENUS_SKY vec3(0.910, 0.851, 0.627)  // #E8D9A0, céu do bioma
+#define VENUS_FOG vec3(0.929, 0.863, 0.651)  // #EDDCA6, névoa
+#define ID_VENUS_CLOUD 10010                 // periodic_elements:venus_cloud
 
 // ---------- Marte (DIM_MARS) ----------
 // cores do céu do mod (client/MarsSky.java), sRGB 0..1
@@ -236,6 +255,8 @@ vec4 lightSourceColor(int id) {
     if (id == 10217) return vec4(1.00, 0.804, 0.275, 0.0); // cleanroom_yellow: sala limpa
     if (id == 10218) return vec4(1.00, 0.725, 0.353, 0.0); // indicator_lamp: luzes de painel
     if (id == 10219) return vec4(1.00, 0.510, 0.902, 0.0); // fusion_plasma: plasma do Tokamak (Balmer, rosa-violeta)
+    if (id == 10220) return vec4(0.471, 1.00, 0.706, 0.0); // shield_aurora: escudo magnético (verde de aurora)
+    if (id == 10221) return vec4(0.925, 0.925, 1.00, 0.0); // annihilation: reator de aniquilação (branco-azulado)
     // 10209 = generic: cor de tocha (abaixo)
     return vec4(TORCH_R, TORCH_G, TORCH_B, 0.0);         // tochas, lava, fornos, máquinas e o resto
 }
@@ -258,6 +279,8 @@ int idFromVoxelCode(uint c) { return c >= 3u ? ID_LIGHT_FIRST + int(c) - 3 : ID_
 #define ID_METEOR 10301 // periodic_elements:meteor
 #define ID_ROCKET 10302 // periodic_elements:rocket
 #define ID_FUSION_PLASMA 10219
+#define ID_SHIELD_AURORA 10220
+#define ID_ANNIHILATION  10221
 #define ID_WHITE_HOT     10212
 #define ID_FURNACE_GLOW  10211
 float ditherNoise(vec2 frag) {

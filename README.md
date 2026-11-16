@@ -28,8 +28,13 @@ Licença MIT (ver `LICENSE`). Créditos de técnicas em `CREDITS.md`.
 - **Marte do Elementar** (`periodic_elements:mars`): céu cor de caramelo de dia e azul em volta do Sol no pôr do sol
   (o céu do mod passa direto), névoa de poeira caramelo mais longe que na Terra, sol mais fraco e quente, sombras
   macias, sem nuvens nem chuva, e tempestades de poeira com névoa marrom e grossa.
-- **Brilho próprio do Elementar:** plasma rosa-violeta do Tokamak (também ilumina o lugar), meteoro em brasa
-  e as partes de cor de chama do foguete.
+- **Mercúrio do Elementar** (`periodic_elements:mercury`): sem ar como a Lua, sol branco muito forte que segue a
+  linha da aurora do mod (rasante perto dela, a pino no lado do dia, noite do outro lado).
+- **Vênus do Elementar** (`periodic_elements:venus`): céu amarelo-esbranquiçado, névoa amarelada leve, sol forte e
+  difuso, sombras macias, luz amarelada das nuvens vinda de baixo, e as nuvens de ácido (blocos) como vidro fosco,
+  com névoa grossa quando a câmera está dentro delas.
+- **Brilho próprio do Elementar:** plasma rosa-violeta do Tokamak, verde de aurora do Escudo Magnético e branco-azulado
+  do Reator de Aniquilação (os três também iluminam o lugar), meteoro em brasa e as partes de cor de chama do foguete.
 - **Anti-aliasing:** FXAA ou TAA. Perfis BAIXO / MÉDIO / ALTO e opções para desligar o que pesa.
 
 ## Instalar
@@ -54,8 +59,8 @@ Ao adicionar blocos ao mod, inclua os IDs novos nesses arquivos.
   `composite4` → tonemap.  `final` → FXAA ou nitidez.  `shadowcomp` → espalha a luz colorida.
 - `lib/settings.glsl` → todas as opções.
 - `program/` → corpo dos programas grandes (a raiz e `moon/` só incluem).
-- `moon/` e `mars/` → os mesmos programas com `#define DIM_MOON` / `#define DIM_MARS`, usados na Lua e em Marte
-  (`dimension.properties`).
+- `moon/`, `mars/`, `mercury/` e `venus/` → os mesmos programas com `#define DIM_MOON` / `DIM_MARS` /
+  `DIM_MERCURY` (+ `DIM_MOON`) / `DIM_VENUS`, usados em cada dimensão (`dimension.properties`).
   Gerada por `python3 tools/gen_dims.py shaders`; rode de novo ao criar um programa novo.
 
 ## Luz colorida

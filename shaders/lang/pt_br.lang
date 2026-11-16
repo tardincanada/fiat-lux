@@ -194,7 +194,7 @@ option.RAIN_SKY_DIM.comment=Quão claros ficam o céu e a névoa de distância n
 option.ICE_TEXTURE=Textura da superfície do gelo
 option.ICE_TEXTURE.comment=Geada e rachaduras sutis no gelo, que aparecem no reflexo e no brilho do sol. 0 = gelo liso.
 screen.ELEMENTAR=Elementar
-screen.ELEMENTAR.comment=Brilho de máquinas e entidades do Elementar, a Lua (sem ar) e Marte (ar fino e empoeirado).
+screen.ELEMENTAR.comment=Brilho de máquinas e entidades do Elementar, a Lua e Mercúrio (sem ar), Marte (ar fino e empoeirado) e Vênus (ar denso acima das nuvens).
 option.PLASMA_GLOW=Brilho do plasma de fusão
 option.PLASMA_GLOW.comment=Quanto brilha o plasma rosa-violeta no anel aceso do Tokamak. Com a luz colorida ligada, o plasma também ilumina o lugar de rosa.
 option.METEOR_GLOW=Brilho do meteoro
@@ -213,3 +213,15 @@ option.MARS_FOG_DISTANCE=Marte: distância da névoa
 option.MARS_FOG_DISTANCE.comment=Onde começa a névoa de poeira cor de caramelo. Maior = mais longe.
 option.MARS_STORMS=Marte: tempestades de poeira
 option.MARS_STORMS.comment=Nas tempestades de poeira do Elementar a névoa fica marrom e grossa e o Sol quase some. O shader segue a cor da névoa que o mod manda.
+option.EXOTIC_GLOW=Brilho do escudo e da aniquilação
+option.EXOTIC_GLOW.comment=Quanto brilham o centro verde do Escudo Magnético (com um pulso lento) e o Reator de Aniquilação aceso.
+option.MERCURY_SUN=Mercúrio: luz do Sol
+option.MERCURY_SUN.comment=Luz do Sol em Mercúrio em relação à Terra. Lá ela é 6,7 vezes mais forte; o padrão é menor para a imagem não estourar.
+option.MERCURY_AURORA_SUN=Mercúrio: Sol pela linha da aurora
+option.MERCURY_AURORA_SUN.comment=A luz vem do Sol que o mod desenha: baixo e rasante perto da linha da aurora, a pino no lado do dia, nenhuma no lado da noite. As sombras projetadas só são exatas perto da linha. Desligado: Sol fixo das 7h.
+option.VENUS_SUN=Vênus: luz do Sol
+option.VENUS_SUN.comment=Luz do Sol acima das nuvens de Vênus em relação à Terra (lá é 1,9 vez, espalhada pela névoa).
+option.VENUS_HAZE=Vênus: névoa
+option.VENUS_HAZE.comment=Névoa amarelada leve no ar denso de Vênus.
+option.VENUS_CLOUD_GLOW=Vênus: luz das nuvens
+option.VENUS_CLOUD_GLOW.comment=Luz do Sol amarelada refletida pelas nuvens lá embaixo, que ilumina o lado de baixo do deque e dos objetos.
