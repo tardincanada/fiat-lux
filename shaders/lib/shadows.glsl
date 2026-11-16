@@ -37,6 +37,9 @@ vec3 getShadow(vec3 feetPos, vec3 worldNormal, float skylight) {
     #ifdef DIM_MOON
     texel *= 0.5; // sem ar nem céu claro a borda da sombra fica nítida
     #endif
+    #ifdef DIM_MARS
+    texel *= 2.0; // a poeira espalha a luz do sol: sombras macias
+    #endif
     vec3 light = vec3(0.0);
     for (int x = -1; x <= 1; x++) {
         for (int y = -1; y <= 1; y++) {

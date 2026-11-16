@@ -16,7 +16,7 @@ float cloudLayerHit(vec3 d, float height) {
 
 vec4 getClouds(vec3 viewDir, out float dist) {
     dist = 1e9;
-    #if !defined PROCEDURAL_CLOUDS || defined DIM_MOON
+    #if !defined PROCEDURAL_CLOUDS || defined DIM_MOON || defined DIM_MARS
     return vec4(0.0);
     #else
     vec3 d = viewToWorldDir(viewDir);

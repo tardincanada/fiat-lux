@@ -33,7 +33,19 @@ void main() {
     else
         outColor = vec4(0.0, 0.0, 0.0, 1.0);
     #endif
-    #else // DIM_MOON
+    #elif defined DIM_MARS
+    // Marte: o mod desenha o céu inteiro (caramelo, azul em volta do sol, estrelas, o Sol e Fobos).
+    // Passa direto, sem nuvens nem chuva por cima. O disco do horizonte do Iris pega a cor do céu.
+    #ifdef SKY_TEXTURED
+    vec4 c = texture(gtexture, texcoord) * glcolor;   // Sol e Fobos
+    outColor = vec4(toLinear(c.rgb) * 2.0, c.a);
+    #else
+    if (renderStage == MC_RENDER_STAGE_CUSTOM_SKY || renderStage == MC_RENDER_STAGE_STARS)
+        outColor = vec4(toLinear(glcolor.rgb), glcolor.a);
+    else
+        outColor = vec4(getBiomeSky(viewPos), 1.0);
+    #endif
+    #else // DIM_MOON / DIM_MARS
     #ifdef SKY_TEXTURED
     vec4 c = texture(gtexture, texcoord) * glcolor;   // sol e lua
     // sol e lua somem atrás das nuvens

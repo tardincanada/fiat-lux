@@ -1,6 +1,8 @@
 # Fiat Lux 1.0.0-beta.4
 
 - The Moon (Elementar 3.64, dimension `periodic_elements:moon`) has its own programs: no air, so the sky is black even by day, with the stars, Sun and Earth drawn by the mod; no sky scattering, distance fog, clouds, rain or snow. The Sun is white and strong, shadows are sharp and almost black, and a faint bluish earthshine comes from the Earth in the northern sky. New "Elementar" screen with Moon sunlight, shadow fill and earthshine sliders.
+- Mars (Elementar 3.66, `periodic_elements:mars`) has its own programs: butterscotch daytime sky and a blue glow around the Sun at sunset (the mod's sky shows through), butterscotch dust haze that starts farther away than on Earth, weaker and warmer sunlight, soft shadows, no clouds or rain. During dust storms the haze turns brown and thick and the Sun fades. New Mars sliders on the "Elementar" screen.
+- Elementar 3.65: KREEP basalt is marked radioactive (weak, it would only glow under water). Lava tubes on the Moon stay dark, with no fog.
 - Fusion plasma: a lit Tokamak (`vacuum_vessel` and `tokamak` with `lit=true`) glows pink-violet (Balmer lines) and lights its surroundings with that colour. New "Fusion plasma glow" slider.
 - Elementar meteors glow yellowish white, and the flame-coloured parts of a flying rocket glow orange. New sliders.
 - Elementar's life support panel lights up like other machine indicator lamps.

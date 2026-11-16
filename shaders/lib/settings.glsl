@@ -5,8 +5,8 @@
 const int   shadowMapResolution = 2048; // [1024 2048 3072 4096]
 const float shadowDistance      = 128.0; // [64.0 96.0 128.0 160.0 192.0 256.0]
 const float shadowDistanceRenderMul = 1.0;
-#ifdef DIM_MOON
-// na Lua o céu é desenhado pelo mod sem inclinar o caminho do sol: a sombra precisa seguir o sol que se vê
+#if defined DIM_MOON || defined DIM_MARS
+// na Lua e em Marte o céu é desenhado pelo mod sem inclinar o caminho do sol: a sombra precisa seguir o sol que se vê
 const float sunPathRotation     = 0.0;
 #else
 const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25.0 30.0 40.0]
@@ -72,6 +72,11 @@ const float sunPathRotation     = -25.0; // [-40.0 -30.0 -25.0 -15.0 0.0 15.0 25
 #define MOON_EARTHSHINE 1.0     // [0.0 0.5 1.0 2.0 4.0]  luz azulada fraca que vem da Terra (aparece nas sombras)
 #define MOON_SHADOW_FILL 1.0    // [0.0 0.5 1.0 2.0 4.0]  luz que clareia as sombras na Lua (1 = quase pretas)
 #define MOON_SUN_BOOST 1.15     // [1.0 1.15 1.3 1.5]  o sol sem atmosfera é mais forte e mais branco
+
+// ---------- Marte (dimensão do Elementar, atmosfera fina e empoeirada) ----------
+#define MARS_SUN 0.55          // [0.43 0.55 0.7 0.85 1.0]  luz do sol em relação à Terra (Marte recebe 43%)
+#define MARS_FOG_DISTANCE 1.0  // [0.5 0.75 1.0 1.25 1.5]  onde começa a névoa caramelo (maior = mais longe)
+#define MARS_STORMS            // tempestades de poeira: névoa marrom e grossa, sol encoberto
 
 // ---------- Céu e nuvens por bioma ----------
 #define BIOME_SKY

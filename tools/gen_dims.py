@@ -4,8 +4,9 @@
 Uso: python3 gen_dims.py <pasta shaders>
 
 O Iris escolhe a pasta de programas pela dimensão (dimension.properties). A Lua do Elementar
-(periodic_elements:moon) usa shaders/moon/, onde cada programa é o mesmo da raiz com
-'#define DIM_MOON' logo depois do #version. As outras dimensões continuam usando a raiz.
+(periodic_elements:moon) usa shaders/moon/ e Marte (periodic_elements:mars) usa shaders/mars/, onde cada
+programa é o mesmo da raiz com '#define DIM_MOON' ou '#define DIM_MARS' logo depois do #version.
+As outras dimensões continuam usando a raiz.
 
 - Programas grandes da raiz (mais de 8 linhas) têm o corpo movido para shaders/program/<nome>.glsl,
   e a raiz vira só '#version' + '#include'. Assim a Lua e a raiz compartilham o mesmo código.
@@ -13,7 +14,7 @@ O Iris escolhe a pasta de programas pela dimensão (dimension.properties). A Lua
 """
 import os, sys, glob, shutil
 
-DIMS = {'moon': '#define DIM_MOON'}
+DIMS = {'moon': '#define DIM_MOON', 'mars': '#define DIM_MARS'}
 EXTS = ('.fsh', '.vsh', '.csh', '.gsh')
 
 def main(shaders):

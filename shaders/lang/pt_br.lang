@@ -194,7 +194,7 @@ option.RAIN_SKY_DIM.comment=Quão claros ficam o céu e a névoa de distância n
 option.ICE_TEXTURE=Textura da superfície do gelo
 option.ICE_TEXTURE.comment=Geada e rachaduras sutis no gelo, que aparecem no reflexo e no brilho do sol. 0 = gelo liso.
 screen.ELEMENTAR=Elementar
-screen.ELEMENTAR.comment=Brilho de máquinas e entidades do Elementar, e a Lua (uma dimensão sem ar).
+screen.ELEMENTAR.comment=Brilho de máquinas e entidades do Elementar, a Lua (sem ar) e Marte (ar fino e empoeirado).
 option.PLASMA_GLOW=Brilho do plasma de fusão
 option.PLASMA_GLOW.comment=Quanto brilha o plasma rosa-violeta no anel aceso do Tokamak. Com a luz colorida ligada, o plasma também ilumina o lugar de rosa.
 option.METEOR_GLOW=Brilho do meteoro
@@ -207,3 +207,9 @@ option.MOON_SHADOW_FILL=Lua: luz nas sombras
 option.MOON_SHADOW_FILL.comment=Luz que chega às sombras na Lua, rebatida pelo chão em volta. 1 = quase pretas, como nas fotos da Apollo.
 option.MOON_EARTHSHINE=Lua: luar da Terra
 option.MOON_EARTHSHINE.comment=Luz azulada fraca da Terra parada no céu do norte. Só se nota nas sombras.
+option.MARS_SUN=Marte: luz do Sol
+option.MARS_SUN.comment=Luz do Sol em Marte em relação à Terra. Marte recebe 43% da luz; o padrão é um pouco mais claro para o jogo não ficar escuro demais.
+option.MARS_FOG_DISTANCE=Marte: distância da névoa
+option.MARS_FOG_DISTANCE.comment=Onde começa a névoa de poeira cor de caramelo. Maior = mais longe.
+option.MARS_STORMS=Marte: tempestades de poeira
+option.MARS_STORMS.comment=Nas tempestades de poeira do Elementar a névoa fica marrom e grossa e o Sol quase some. O shader segue a cor da névoa que o mod manda.

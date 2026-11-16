@@ -215,6 +215,16 @@ void main() {
         // Lua: sem ar, sem névoa nem perspectiva atmosférica. Só a borda da distância de
         // renderização some no preto do céu, para os chunks não aparecerem cortados.
         color *= 1.0 - smoothstep(far * 0.93, far, dist);
+        #elif defined DIM_MARS
+        // Marte: névoa cor de caramelo (a cor do céu atrás do objeto), que começa mais longe que na
+        // Terra num dia limpo. Na tempestade de poeira ela fica marrom e grossa.
+        float storm = marsStorm();
+        float start = min(far * 0.55 * MARS_FOG_DISTANCE, far * 0.95);
+        float f = smoothstep(start, far, dist) * 0.9;
+        f = max(f, 1.0 - exp(-dist * 0.0025 / MARS_FOG_DISTANCE));
+        f = max(f, storm * (1.0 - exp(-dist * mix(0.008, 0.045, smoothstep(0.45, 1.0, storm)))));
+        f = max(f, smoothstep(far * 0.9, far, dist)); // borda da distância de renderização some no céu
+        color = mix(color, getBiomeSky(viewPos), clamp(f, 0.0, 1.0));
         #else
         // começa mais longe em ar seco (Leve), bem perto em Densa
         float altClear = 1.0 - ALT_FOG_CLEAR * altitudeFactor();

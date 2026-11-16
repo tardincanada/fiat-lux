@@ -194,7 +194,7 @@ option.RAIN_SKY_DIM.comment=How bright the sky and the distance fog are in rain,
 option.ICE_TEXTURE=Ice surface texture
 option.ICE_TEXTURE.comment=Subtle frost and cracks on ice, seen in its reflection and sun glint. 0 = smooth ice.
 screen.ELEMENTAR=Elementar
-screen.ELEMENTAR.comment=Glow of Elementar machines and entities, and the Moon (a dimension without air).
+screen.ELEMENTAR.comment=Glow of Elementar machines and entities, the Moon (no air) and Mars (thin dusty air).
 option.PLASMA_GLOW=Fusion plasma glow
 option.PLASMA_GLOW.comment=How much the pink-violet plasma in a lit Tokamak ring glows. The plasma also lights its surroundings pink with Coloured light on.
 option.METEOR_GLOW=Meteor glow
@@ -207,3 +207,9 @@ option.MOON_SHADOW_FILL=Moon: shadow fill
 option.MOON_SHADOW_FILL.comment=Light that reaches shadows on the Moon, bounced from the ground around. 1 = almost black, as in the Apollo photos.
 option.MOON_EARTHSHINE=Moon: earthshine
 option.MOON_EARTHSHINE.comment=Faint bluish light from the Earth hanging in the northern sky. Only noticeable in shadows.
+option.MARS_SUN=Mars: sunlight
+option.MARS_SUN.comment=Sunlight on Mars compared with Earth. Mars gets 43% of Earth's light; the default is a bit brighter so the game is not too dark.
+option.MARS_FOG_DISTANCE=Mars: haze distance
+option.MARS_FOG_DISTANCE.comment=Where the butterscotch dust haze starts. Higher = farther.
+option.MARS_STORMS=Mars: dust storms
+option.MARS_STORMS.comment=During Elementar's dust storms the haze turns brown and thick and the Sun almost disappears. The shader follows the fog colour the mod sends.

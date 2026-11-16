@@ -8,7 +8,7 @@ vec3 viewToWorldDir(vec3 v) { return normalize(mat3(gbufferModelViewInverse) * v
 
 // 0 = céu aberto, 1 = totalmente fechado (chuva ou bioma nublado)
 float overcastAmount() {
-    #ifdef DIM_MOON
+    #if defined DIM_MOON || defined DIM_MARS
     return 0.0;
     #endif
     // acima da camada de nuvens o céu do bioma nublado fica limpo
@@ -30,6 +30,26 @@ float rainSkyDim() {
 vec3 getBiomeSky(vec3 viewDir) {
     #ifdef DIM_MOON
     return vec3(0.0); // sem atmosfera: o céu é preto mesmo de dia (as estrelas, o Sol e a Terra vêm do mod)
+    #endif
+    #ifdef DIM_MARS
+    {
+        // Marte: a poeira fina deixa o dia cor de caramelo e o pôr do sol azul em volta do sol
+        // (as mesmas cores do céu que o mod desenha). Usado pela névoa e pela luz ambiente.
+        vec3 d = viewToWorldDir(viewDir);
+        vec3 sunDir = viewToWorldDir(sunPosition);
+        float h = sunHeight();
+        float up = max(d.y, 0.0);
+        vec3 sky = mix(toLinear(MARS_HORIZON), toLinear(MARS_ZENITH), 1.0 - pow(1.0 - up, 2.5));
+        float sunDot = max(dot(d, sunDir), 0.0);
+        float low = 1.0 - smoothstep(0.05, 0.5, h);        // sol baixo: o azul fica forte e largo
+        float blue = pow(sunDot, mix(24.0, 6.0, low)) * mix(0.25, 1.0, low);
+        sky = mix(sky, toLinear(MARS_BLUE), clamp(blue, 0.0, 1.0));
+        float storm = marsStorm();
+        sky = mix(sky, toLinear(MARS_DUST) * mix(1.0, 0.75, up), storm);
+        // noite: escurece como a névoa do mod; o azul do crepúsculo dura até o sol a ~-6°
+        float day = smoothstep(-0.12, 0.05, h);
+        return mix(vec3(0.0025, 0.002, 0.0018), sky, day) * SKY_BRIGHTNESS;
+    }
     #endif
     vec3 vanilla = getSkyColor(viewDir);
     #ifndef BIOME_SKY

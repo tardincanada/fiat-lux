@@ -15,8 +15,8 @@ uniform vec3 cameraPosition;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 uniform float frameTimeCounter;
-#ifdef DIM_MOON
-// a Lua não tem tempo: o Minecraft copia a chuva do mundo normal, então o shader ignora
+#if defined DIM_MOON || defined DIM_MARS
+// a Lua e Marte não têm chuva: o Minecraft copia a chuva do mundo normal, então o shader ignora
 const float rainStrength = 0.0;
 const float thunderStrength = 0.0;
 #else
@@ -166,7 +166,7 @@ float cloudTop() { return cloudLayerHeights().z; }
 
 // 1 quando a câmera está acima da camada de nuvens mais alta
 float aboveClouds() {
-    #if defined CLEAR_ABOVE_CLOUDS && !defined DIM_MOON
+    #if defined CLEAR_ABOVE_CLOUDS && !defined DIM_MOON && !defined DIM_MARS
     float top = cloudTop();
     return smoothstep(top, top + 24.0, cameraPosition.y);
     #else
@@ -177,6 +177,26 @@ float aboveClouds() {
 // ---------- Lua (DIM_MOON) ----------
 // direção da Terra no céu da Lua (espaço do mundo): para o norte (-Z) e ~55° para cima (P7 do mod)
 #define MOON_EARTH_DIR vec3(0.0, 0.82, -0.57)
+
+// ---------- Marte (DIM_MARS) ----------
+// cores do céu do mod (client/MarsSky.java), sRGB 0..1
+#define MARS_HORIZON vec3(0.86, 0.72, 0.56)
+#define MARS_ZENITH  vec3(0.64, 0.47, 0.34)
+#define MARS_BLUE    vec3(0.42, 0.60, 0.86)  // brilho azul em volta do sol, forte no pôr do sol
+#define MARS_DUST    vec3(0.58, 0.40, 0.27)  // tempestade de poeira
+// Força da tempestade de poeira (0..1), lida da cor da névoa que o mod manda: ela vai do caramelo
+// do horizonte (azul/vermelho = 0,65) ao marrom da poeira (0,47). A razão não muda quando a névoa
+// escurece à noite; bem no escuro ela fica incerta, então pesa menos.
+float marsStorm() {
+    #ifndef MARS_STORMS
+    return 0.0;
+    #else
+    vec3 f = fogColor;
+    float ratio = f.b / max(f.r, 1e-3);
+    float s = clamp((0.651 - ratio) / (0.651 - 0.466), 0.0, 1.0);
+    return smoothstep(0.1, 0.9, s) * smoothstep(0.01, 0.06, f.r);
+    #endif
+}
 
 float sunHeight() { return dot(normalize(sunPosition), normalize(upPosition)); }
 

@@ -13,6 +13,17 @@ vec3 getLightColor() {
     // sol sem atmosfera: branco, sem avermelhar perto do horizonte, e some só quando se põe
     return vec3(1.0, 0.97, 0.93) * SUN_BRIGHTNESS * MOON_SUN_BOOST * smoothstep(-0.01, 0.02, h);
     #endif
+    #ifdef DIM_MARS
+    {
+        // Marte: sol mais fraco (43% da luz) e um pouco mais quente; perto do horizonte a poeira
+        // tira mais luz. Na tempestade o sol quase some. À noite só Fobos e as estrelas: quase nada.
+        float dayM = smoothstep(0.0, 0.10, h);
+        vec3 sunM = mix(vec3(1.0, 0.62, 0.40), vec3(1.0, 0.90, 0.76), smoothstep(0.05, 0.45, h));
+        float storm = marsStorm();
+        return sunM * SUN_BRIGHTNESS * MARS_SUN * dayM * (1.0 - 0.9 * storm)
+             + vec3(0.30, 0.28, 0.26) * 0.02 * smoothstep(0.0, 0.12, -h);
+    }
+    #endif
     float day   = smoothstep(0.0, 0.12, h);
     float night = smoothstep(0.0, 0.12, -h);
     vec3 sun  = mix(vec3(1.0, 0.45, 0.2), vec3(1.0, 0.93, 0.82), smoothstep(0.05, 0.4, h)) * SUN_BRIGHTNESS;
@@ -38,6 +49,10 @@ vec3 getAmbientColor() {
     vec3 h2  = getBiomeSky(mat3(gbufferModelView) * normalize(vec3(-1.0, 0.15, -0.3)));
     vec3 a = (zen * 0.55 + (h1 + h2) * 0.225) * AMBIENT_SKY_SCALE / rainSkyDim();
     a = max(a, vec3(0.010, 0.013, 0.026)); // piso para noites muito escuras
+    #ifdef DIM_MARS
+    // Marte: o céu caramelo é claro, mas o sol é fraco; a poeira dá ~1/3 de luz difusa nas sombras
+    a *= 0.45;
+    #endif
     return a * AMBIENT_STRENGTH;
 }
 

@@ -25,6 +25,9 @@ Licença MIT (ver `LICENSE`). Créditos de técnicas em `CREDITS.md`.
 - **A Lua do Elementar** (`periodic_elements:moon`): sem atmosfera, céu preto com as estrelas, o Sol e a
   Terra que o mod desenha, sem névoa, nuvens nem chuva, sol branco e forte, sombras quase pretas e um
   luar azulado fraco vindo da Terra.
+- **Marte do Elementar** (`periodic_elements:mars`): céu cor de caramelo de dia e azul em volta do Sol no pôr do sol
+  (o céu do mod passa direto), névoa de poeira caramelo mais longe que na Terra, sol mais fraco e quente, sombras
+  macias, sem nuvens nem chuva, e tempestades de poeira com névoa marrom e grossa.
 - **Brilho próprio do Elementar:** plasma rosa-violeta do Tokamak (também ilumina o lugar), meteoro em brasa
   e as partes de cor de chama do foguete.
 - **Anti-aliasing:** FXAA ou TAA. Perfis BAIXO / MÉDIO / ALTO e opções para desligar o que pesa.
@@ -51,7 +54,8 @@ Ao adicionar blocos ao mod, inclua os IDs novos nesses arquivos.
   `composite4` → tonemap.  `final` → FXAA ou nitidez.  `shadowcomp` → espalha a luz colorida.
 - `lib/settings.glsl` → todas as opções.
 - `program/` → corpo dos programas grandes (a raiz e `moon/` só incluem).
-- `moon/` → os mesmos programas com `#define DIM_MOON`, usados na Lua (`dimension.properties`).
+- `moon/` e `mars/` → os mesmos programas com `#define DIM_MOON` / `#define DIM_MARS`, usados na Lua e em Marte
+  (`dimension.properties`).
   Gerada por `python3 tools/gen_dims.py shaders`; rode de novo ao criar um programa novo.
 
 ## Luz colorida
