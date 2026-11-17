@@ -239,7 +239,8 @@ void main() {
                 // clara por dentro como névoa; o sol atravessa e a deixa luminosa
                 lmat = MAT_FOLIAGE;
                 color = toLinear(mix(albedo.rgb, VENUS_FOG, 0.35)) * 1.15;
-                albedo.a = clamp(albedo.a * 0.85, 0.0, 1.0);
+                // textura do mod com alfa ~115 (95 a 135): leve reforço para ~0,5 de cobertura
+                albedo.a = clamp(albedo.a * 1.1, 0.0, 1.0);
             }
             #endif
             color = shadeSurface(color, viewPos, n, lmcoord, lmat);
