@@ -5,9 +5,9 @@
 - Mercury (Elementar 3.68): airless like the Moon, with a very strong white Sun that follows the mod's dawn line: low and grazing near it, overhead on the day side, no sunlight on the night side. Cast shadows are exact only near the dawn line.
 - Venus (Elementar 3.68): pale yellow sky, light yellowish haze, strong but diffuse sun, soft shadows, yellowish light reflected up from the clouds, and the acid cloud blocks look like frosted glass, with thick fog when the camera is inside the cloud layer. No moon, faint stars.
 - New light kinds from Elementar 3.67: the Magnetic Shield glows aurora green (with a slow pulse on its texture) and the lit Annihilation Reactor glows a hard bluish white; both light their surroundings.
-- Elementar 3.65: KREEP basalt is marked radioactive (weak, it would only glow under water). Lava tubes on the Moon stay dark, with no fog.
+- Elementar 3.65: lava tubes on the Moon stay dark, with no fog. KREEP basalt is too weakly radioactive to glow, as in the mod.
 - Fusion plasma: a lit Tokamak (`vacuum_vessel` and `tokamak` with `lit=true`) glows pink-violet (Balmer lines) and lights its surroundings with that colour. New "Fusion plasma glow" slider.
-- Elementar meteors glow yellowish white, and the flame-coloured parts of a flying rocket glow orange. New sliders.
+- Elementar meteors glow yellowish white, and bright flame-coloured parts of a flying rocket glow orange (painted parts such as the kerosene engine's turbopump do not). New sliders.
 - Elementar's life support panel lights up like other machine indicator lamps.
 
 # Fiat Lux 1.0.0-beta.3

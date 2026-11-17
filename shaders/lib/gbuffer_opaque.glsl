@@ -144,7 +144,8 @@ void main() {
         float mx = max(albedo.r, max(albedo.g, albedo.b));
         float mn = min(albedo.r, min(albedo.g, albedo.b));
         float sat = (mx - mn) / max(mx, 1e-4);
-        float flame = smoothstep(0.6, 0.9, albedo.r) * smoothstep(0.45, 0.7, sat) * step(albedo.b, albedo.g);
+        // só laranja/amarelo bem claros (chama); a turbobomba pintada do motor de querosene (200,140,60) fica de fora
+        float flame = smoothstep(0.88, 0.97, albedo.r) * smoothstep(0.5, 0.65, albedo.g) * smoothstep(0.45, 0.7, sat) * step(albedo.b, albedo.g);
         emissive = max(emissive, toLinear(mix(albedo.rgb, lightSourceColor(ID_FURNACE_GLOW).rgb, 0.4)) * flame * EMISSIVE_STRENGTH * ROCKET_GLOW);
     }
     vec3 wetGlow = vec3(0.0);
