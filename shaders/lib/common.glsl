@@ -15,12 +15,18 @@ uniform vec3 cameraPosition;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 uniform float frameTimeCounter;
+#if defined DIM_MOON || defined DIM_MARS || defined DIM_VENUS
+// a Lua, Marte e Vênus não têm chuva: o Minecraft copia a chuva do mundo normal, então o shader ignora
+const float rainStrength = 0.0;
+const float thunderStrength = 0.0;
+#else
 uniform float rainStrength;
+uniform float thunderStrength;
+#endif
 uniform float viewWidth;
 uniform float viewHeight;
 uniform float far;
 uniform int frameCounter;
-uniform float thunderStrength;
 uniform int isEyeInWater;
 uniform ivec2 eyeBrightnessSmooth;
 // uniforms de bioma (shaders.properties)
@@ -160,11 +166,54 @@ float cloudTop() { return cloudLayerHeights().z; }
 
 // 1 quando a câmera está acima da camada de nuvens mais alta
 float aboveClouds() {
-    #ifdef CLEAR_ABOVE_CLOUDS
+    #if defined CLEAR_ABOVE_CLOUDS && !defined DIM_MOON && !defined DIM_MARS && !defined DIM_VENUS
     float top = cloudTop();
     return smoothstep(top, top + 24.0, cameraPosition.y);
     #else
     return 0.0;
+    #endif
+}
+
+// ---------- Lua (DIM_MOON) ----------
+// direção da Terra no céu da Lua (espaço do mundo): para o norte (-Z) e ~55° para cima (P7 do mod)
+#define MOON_EARTH_DIR vec3(0.0, 0.82, -0.57)
+
+// ---------- Mercúrio (DIM_MERCURY) ----------
+// O dia em Mercúrio dura 176 dias da Terra: a linha da aurora anda pelo chão, em x = -tempo / 1200
+// (1 bloco para o oeste por minuto). O Sol sobe 0,6° por bloco para o leste da linha, a pino a
+// 150 blocos, e fica abaixo do horizonte a oeste dela (client/InnerSky.java do mod).
+#ifdef DIM_MERCURY
+uniform int worldTime;
+uniform int worldDay;
+float mercuryLineX() { return -(float(worldDay) * 20.0 + float(worldTime) / 1200.0); }
+// altura do Sol em graus num ponto x do mundo
+float mercurySunElev(float x) { return clamp((x - mercuryLineX()) * 0.6, -90.0, 90.0); }
+// direção do Sol (espaço do mundo): nasce no leste (+X) e passa pelo zênite
+vec3 mercurySunDir(float x) { float e = radians(mercurySunElev(x)); return vec3(cos(e), sin(e), 0.0); }
+#endif
+
+// ---------- Vênus (DIM_VENUS) ----------
+#define VENUS_SKY vec3(0.910, 0.851, 0.627)  // #E8D9A0, céu do bioma
+#define VENUS_FOG vec3(0.929, 0.863, 0.651)  // #EDDCA6, névoa
+#define ID_VENUS_CLOUD 10010                 // periodic_elements:venus_cloud
+
+// ---------- Marte (DIM_MARS) ----------
+// cores do céu do mod (client/MarsSky.java), sRGB 0..1
+#define MARS_HORIZON vec3(0.86, 0.72, 0.56)
+#define MARS_ZENITH  vec3(0.64, 0.47, 0.34)
+#define MARS_BLUE    vec3(0.42, 0.60, 0.86)  // brilho azul em volta do sol, forte no pôr do sol
+#define MARS_DUST    vec3(0.58, 0.40, 0.27)  // tempestade de poeira
+// Força da tempestade de poeira (0..1), lida da cor da névoa que o mod manda: ela vai do caramelo
+// do horizonte (azul/vermelho = 0,65) ao marrom da poeira (0,47). A razão não muda quando a névoa
+// escurece à noite; bem no escuro ela fica incerta, então pesa menos.
+float marsStorm() {
+    #ifndef MARS_STORMS
+    return 0.0;
+    #else
+    vec3 f = fogColor;
+    float ratio = f.b / max(f.r, 1e-3);
+    float s = clamp((0.651 - ratio) / (0.651 - 0.466), 0.0, 1.0);
+    return smoothstep(0.1, 0.9, s) * smoothstep(0.01, 0.06, f.r);
     #endif
 }
 
@@ -205,6 +254,9 @@ vec4 lightSourceColor(int id) {
     if (id == 10216) return vec4(0.314, 0.667, 1.00, 0.0); // cherenkov: azul Cherenkov
     if (id == 10217) return vec4(1.00, 0.804, 0.275, 0.0); // cleanroom_yellow: sala limpa
     if (id == 10218) return vec4(1.00, 0.725, 0.353, 0.0); // indicator_lamp: luzes de painel
+    if (id == 10219) return vec4(1.00, 0.510, 0.902, 0.0); // fusion_plasma: plasma do Tokamak (Balmer, rosa-violeta)
+    if (id == 10220) return vec4(0.471, 1.00, 0.706, 0.0); // shield_aurora: escudo magnético (verde de aurora)
+    if (id == 10221) return vec4(0.925, 0.925, 1.00, 0.0); // annihilation: reator de aniquilação (branco-azulado)
     // 10209 = generic: cor de tocha (abaixo)
     return vec4(TORCH_R, TORCH_G, TORCH_B, 0.0);         // tochas, lava, fornos, máquinas e o resto
 }
@@ -224,6 +276,13 @@ int idFromVoxelCode(uint c) { return c >= 3u ? ID_LIGHT_FIRST + int(c) - 3 : ID_
 
 // ---------- transparência por pontilhado (o TAA mistura os pontos numa transparência lisa) ----------
 #define ID_SLIME 10300 // entity.properties
+#define ID_METEOR 10301 // periodic_elements:meteor
+#define ID_ROCKET 10302 // periodic_elements:rocket
+#define ID_FUSION_PLASMA 10219
+#define ID_SHIELD_AURORA 10220
+#define ID_ANNIHILATION  10221
+#define ID_WHITE_HOT     10212
+#define ID_FURNACE_GLOW  10211
 float ditherNoise(vec2 frag) {
     #if AA_MODE == 2
     frag += 5.588238 * float(frameCounter % 64);   // muda a cada quadro: o TAA tira a média

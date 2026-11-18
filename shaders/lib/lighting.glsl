@@ -9,6 +9,35 @@ uniform int heldBlockLightValue2;
 // Luz direta (sol de dia, lua de noite)
 vec3 getLightColor() {
     float h = sunHeight();
+    #if defined DIM_MERCURY && defined MERCURY_AURORA_SUN
+    h = sin(radians(mercurySunElev(cameraPosition.x))); // altura do Sol onde a câmera está
+    #endif
+    #ifdef DIM_MERCURY
+    return vec3(1.0, 0.99, 0.97) * SUN_BRIGHTNESS * MERCURY_SUN * smoothstep(-0.01, 0.02, h);
+    #endif
+    #ifdef DIM_MOON
+    // sol sem atmosfera: branco, sem avermelhar perto do horizonte, e some só quando se põe
+    return vec3(1.0, 0.97, 0.93) * SUN_BRIGHTNESS * MOON_SUN_BOOST * smoothstep(-0.01, 0.02, h);
+    #endif
+    #ifdef DIM_VENUS
+    {
+        // Vênus acima das nuvens: sol forte (1,9x), mas espalhado pela névoa; quente no poente
+        float dayV = smoothstep(0.0, 0.10, h);
+        vec3 sunV = mix(vec3(1.0, 0.62, 0.36), vec3(1.0, 0.95, 0.84), smoothstep(0.05, 0.4, h));
+        return sunV * SUN_BRIGHTNESS * VENUS_SUN * dayV;
+    }
+    #endif
+    #ifdef DIM_MARS
+    {
+        // Marte: sol mais fraco (43% da luz) e um pouco mais quente; perto do horizonte a poeira
+        // tira mais luz. Na tempestade o sol quase some. À noite só Fobos e as estrelas: quase nada.
+        float dayM = smoothstep(0.0, 0.10, h);
+        vec3 sunM = mix(vec3(1.0, 0.62, 0.40), vec3(1.0, 0.90, 0.76), smoothstep(0.05, 0.45, h));
+        float storm = marsStorm();
+        return sunM * SUN_BRIGHTNESS * MARS_SUN * dayM * (1.0 - 0.9 * storm)
+             + vec3(0.30, 0.28, 0.26) * 0.02 * smoothstep(0.0, 0.12, -h);
+    }
+    #endif
     float day   = smoothstep(0.0, 0.12, h);
     float night = smoothstep(0.0, 0.12, -h);
     vec3 sun  = mix(vec3(1.0, 0.45, 0.2), vec3(1.0, 0.93, 0.82), smoothstep(0.05, 0.4, h)) * SUN_BRIGHTNESS;
@@ -25,11 +54,22 @@ vec3 getLightColor() {
 // Luz ambiente = a cor do céu que o observador vê (zênite + horizonte).
 // Céu azul deixa a sombra azulada; céu cinza deixa a luz difusa e neutra; no pôr do sol, alaranjada.
 vec3 getAmbientColor() {
+    #ifdef DIM_MOON
+    // céu preto não ilumina: só um resto de luz rebatida pelas montanhas e crateras em volta
+    return vec3(0.0045, 0.0045, 0.0050) * MOON_SHADOW_FILL * AMBIENT_STRENGTH;
+    #endif
     vec3 zen = getBiomeSky(normalize(upPosition));
     vec3 h1  = getBiomeSky(mat3(gbufferModelView) * normalize(vec3( 1.0, 0.15,  0.3)));
     vec3 h2  = getBiomeSky(mat3(gbufferModelView) * normalize(vec3(-1.0, 0.15, -0.3)));
     vec3 a = (zen * 0.55 + (h1 + h2) * 0.225) * AMBIENT_SKY_SCALE / rainSkyDim();
     a = max(a, vec3(0.010, 0.013, 0.026)); // piso para noites muito escuras
+    #ifdef DIM_VENUS
+    a *= 0.8; // o céu de Vênus é muito claro; a luz difusa já vem forte dele
+    #endif
+    #ifdef DIM_MARS
+    // Marte: o céu caramelo é claro, mas o sol é fraco; a poeira dá ~1/3 de luz difusa nas sombras
+    a *= 0.45;
+    #endif
     return a * AMBIENT_STRENGTH;
 }
 
@@ -116,11 +156,41 @@ vec3 computeLightingSplit(vec3 viewPos, vec3 viewNormal, vec2 lm, int mat, out v
     shadowOut = shadow;
 
     vec3 direct  = getLightColor() * NdotL * shadow;
+    #if defined DIM_MERCURY && defined MERCURY_AURORA_SUN
+    {
+        // Mercúrio: o Sol de cada ponto depende de onde ele está em relação à linha da aurora.
+        // O mapa de sombras do Iris é sempre o do sol fixo (~28° no leste); ele só vale onde o Sol
+        // de verdade está perto dessa direção. Longe dela, a sombra vira a luz do céu do Minecraft.
+        vec3 sW = mercurySunDir(feet.x + cameraPosition.x);
+        vec3 Lm = mat3(gbufferModelView) * sW;
+        float nl = (mat == MAT_FOLIAGE) ? 0.6 : max(dot(viewNormal, Lm), 0.0);
+        float agree = smoothstep(0.88, 0.97, dot(sW, normalize(mat3(gbufferModelViewInverse) * L)));
+        vec3 fb = vec3(smoothstep(0.75, 0.95, lm.y));
+        vec3 sh = fb;
+        if (agree > 0.0 && nl > 0.0) sh = mix(fb, getShadow(feet, worldN, lm.y) * smoothstep(0.0, 0.25, lm.y), agree);
+        float e = sW.y;
+        vec3 sunC = vec3(1.0, 0.99, 0.97) * SUN_BRIGHTNESS * MERCURY_SUN * smoothstep(-0.01, 0.02, e);
+        shadowOut = sh;
+        direct = sunC * nl * sh;
+    }
+    #endif
     // hemisfério: faces para cima recebem o céu todo; para baixo, só luz rebatida do chão
     float skyF = (mat == MAT_FOLIAGE) ? 0.75 : 0.5 + 0.5 * worldN.y;
     vec3 bounce = getLightColor() * vec3(0.9, 0.85, 0.75) * GROUND_BOUNCE;
+    #ifdef DIM_VENUS
+    // Vênus: o topo das nuvens (muito claro) devolve o sol para cima: brilho amarelado por baixo
+    bounce = getLightColor() * toLinear(VENUS_FOG) * 0.35 * VENUS_CLOUD_GLOW + getAmbientColor() * 0.3;
+    #endif
     vec3 ambient = (getAmbientColor() * mix(0.45, 1.0, skyF) + bounce * (1.0 - skyF))
                  * (lm.y * lm.y * 0.85 + lm.y * 0.15) + vec3(MIN_LIGHT);
+    #if defined DIM_MOON && !defined DIM_MERCURY
+    // luar da Terra: luz azulada fraca vinda da Terra parada no céu do norte (só se nota na sombra)
+    {
+        vec3 nW = (mat == MAT_FOLIAGE) ? vec3(0.0, 1.0, 0.0) : worldN;
+        float e = max(dot(nW, normalize(MOON_EARTH_DIR)), 0.0) * 0.8 + 0.2;
+        ambient += vec3(0.30, 0.45, 1.0) * 0.012 * MOON_EARTHSHINE * e * (lm.y * lm.y);
+    }
+    #endif
     float hand = handLight(viewPos);
     float arc;
     vec4 tint = blockLightTint(feet, worldN, arc);

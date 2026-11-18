@@ -193,3 +193,35 @@ option.RAIN_SKY_DIM=Rain sky and fog brightness
 option.RAIN_SKY_DIM.comment=How bright the sky and the distance fog are in rain, so far hills do not look whiter than the clouds. 1 = old look. Ambient light is not changed.
 option.ICE_TEXTURE=Ice surface texture
 option.ICE_TEXTURE.comment=Subtle frost and cracks on ice, seen in its reflection and sun glint. 0 = smooth ice.
+screen.ELEMENTAR=Elementar
+screen.ELEMENTAR.comment=Glow of Elementar machines and entities, the Moon and Mercury (no air), Mars (thin dusty air) and Venus (dense air above the clouds).
+option.PLASMA_GLOW=Fusion plasma glow
+option.PLASMA_GLOW.comment=How much the pink-violet plasma in a lit Tokamak ring glows. The plasma also lights its surroundings pink with Coloured light on.
+option.METEOR_GLOW=Meteor glow
+option.METEOR_GLOW.comment=Meteors streaking across the night sky glow yellowish white.
+option.ROCKET_GLOW=Rocket flame glow
+option.ROCKET_GLOW.comment=Flame-coloured (orange and yellow) parts of a flying rocket glow. The paint does not.
+option.MOON_SUN_BOOST=Moon: sunlight
+option.MOON_SUN_BOOST.comment=On the Moon there is no air: the Sun is stronger and whiter than on Earth.
+option.MOON_SHADOW_FILL=Moon: shadow fill
+option.MOON_SHADOW_FILL.comment=Light that reaches shadows on the Moon, bounced from the ground around. 1 = almost black, as in the Apollo photos.
+option.MOON_EARTHSHINE=Moon: earthshine
+option.MOON_EARTHSHINE.comment=Faint bluish light from the Earth hanging in the northern sky. Only noticeable in shadows.
+option.MARS_SUN=Mars: sunlight
+option.MARS_SUN.comment=Sunlight on Mars compared with Earth. Mars gets 43% of Earth's light; the default is a bit brighter so the game is not too dark.
+option.MARS_FOG_DISTANCE=Mars: haze distance
+option.MARS_FOG_DISTANCE.comment=Where the butterscotch dust haze starts. Higher = farther.
+option.MARS_STORMS=Mars: dust storms
+option.MARS_STORMS.comment=During Elementar's dust storms the haze turns brown and thick and the Sun almost disappears. The shader follows the fog colour the mod sends.
+option.EXOTIC_GLOW=Shield and annihilation glow
+option.EXOTIC_GLOW.comment=How much the green centre of the Magnetic Shield (with a slow pulse) and the lit Annihilation Reactor glow.
+option.MERCURY_SUN=Mercury: sunlight
+option.MERCURY_SUN.comment=Sunlight on Mercury compared with Earth. It is 6.7 times stronger there; the default is lower so the picture is not blown out.
+option.MERCURY_AURORA_SUN=Mercury: Sun follows the dawn line
+option.MERCURY_AURORA_SUN.comment=Sunlight comes from the Sun the mod draws: low and grazing near the dawn line, overhead on the day side, none on the night side. Cast shadows are only exact near the dawn line. Off: fixed 7 a.m. Sun.
+option.VENUS_SUN=Venus: sunlight
+option.VENUS_SUN.comment=Sunlight above the clouds of Venus compared with Earth (1.9 times there, spread by the haze).
+option.VENUS_HAZE=Venus: haze
+option.VENUS_HAZE.comment=Light yellowish haze in the dense air of Venus.
+option.VENUS_CLOUD_GLOW=Venus: light from the clouds
+option.VENUS_CLOUD_GLOW.comment=Yellowish sunlight reflected up from the cloud deck, lighting the underside of the deck and objects.

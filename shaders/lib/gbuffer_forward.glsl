@@ -13,6 +13,7 @@ out vec3 viewPos;
 flat out int matId;
 flat out float waterCls;
 flat out float isIce;
+flat out float isCloud;
 #ifdef PROGRAM_WEATHER
 uniform sampler2D gtexture;
 flat out float wRain;
@@ -41,8 +42,10 @@ void main() {
     matId = idToMaterial(int(mc_Entity.x + 0.5));
     waterCls = waterClassFromId(int(mc_Entity.x + 0.5));
     isIce = int(mc_Entity.x + 0.5) == ID_ICE ? 1.0 : 0.0;
+    isCloud = int(mc_Entity.x + 0.5) == ID_VENUS_CLOUD ? 1.0 : 0.0;
     #else
     isIce = 0.0;
+    isCloud = 0.0;
     waterCls = 0.0;
     matId = MAT_DEFAULT;
     #endif
@@ -60,6 +63,7 @@ in vec3 viewPos;
 flat in int matId;
 flat in float waterCls;
 flat in float isIce;
+flat in float isCloud;
 #ifdef PROGRAM_WEATHER
 flat in float wRain;
 #endif
@@ -230,6 +234,14 @@ void main() {
             #endif
             #ifdef PROGRAM_WATER
             lmat = MAT_DEFAULT;
+            if (isCloud > 0.5) {
+                // nuvem de ácido de Vênus: vidro fosco que espalha a luz (sem direção, sem reflexo),
+                // clara por dentro como névoa; o sol atravessa e a deixa luminosa
+                lmat = MAT_FOLIAGE;
+                color = toLinear(mix(albedo.rgb, VENUS_FOG, 0.35)) * 1.15;
+                // textura do mod com alfa ~115 (95 a 135): leve reforço para ~0,5 de cobertura
+                albedo.a = clamp(albedo.a * 1.1, 0.0, 1.0);
+            }
             #endif
             color = shadeSurface(color, viewPos, n, lmcoord, lmat);
         }
